@@ -1,0 +1,20 @@
+{
+  "name": "pt-cjr-grupo5",
+  "version": "1.0.0",
+  "description": "Projeto do Processo Trainee 2025.1",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/pedrobamaral/pt-cjr-grupo5.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/pedrobamaral/pt-cjr-grupo5/issues"
+  },
+  "homepage": "https://github.com/pedrobamaral/pt-cjr-grupo5#readme"
+}
