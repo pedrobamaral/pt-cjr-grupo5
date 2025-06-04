@@ -16,5 +16,9 @@
   "bugs": {
     "url": "https://github.com/pedrobamaral/pt-cjr-grupo5/issues"
   },
-  "homepage": "https://github.com/pedrobamaral/pt-cjr-grupo5#readme"
+  "homepage": "https://github.com/pedrobamaral/pt-cjr-grupo5#readme",
+  "dependencies": {
+    "formik": "^2.4.6",
+    "yup": "^1.6.1"
+  }
 }
