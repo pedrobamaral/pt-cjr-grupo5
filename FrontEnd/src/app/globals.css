@@ -8,22 +8,100 @@ body {
   margin: 0;
   padding: 0;
   overflow: hidden;
-
+  box-sizing: border-box;
+  background-color: #ffffff;
+}
 * {
   box-sizing: border-box;
 }
-body{
-    background-color:#0e444d !important;
-}
-.bg-form {
-  background-color: #0e444d;
+
+/* Container do formulário */
+.form-container {
+  max-width: 700px;      /* Largura máxima para desktop */
+  width: 100%;           /* Responsivo */
+  padding: 2.5rem;       /* Espaçamento interno */
+  margin: 0 auto;        /* Centralizado */
 }
 
-.form-container {
-  width: 190px;
-  height: 254px;
-  border-radius: 30px;
-  background: lightgrey;
-  padding: 3rem;
+/* Título do formulário */
+.form-container h1 {
+  font-size: 2.5rem;
+  margin-bottom: 3rem;
+  color: white;
+  text-align: center;
+  font-weight: 700;
 }
+
+/* Formulário em coluna */
+.form-container form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.7rem;
+}
+
+/* Labels */
+.form-container label {
+  color: white;
+  font-weight: 600;
+  font-size: 1.40rem;
+  margin-bottom: 0.5rem;
+}
+
+/* Inputs */
+.form-container input {
+  height: 4rem;
+  padding: 0 1.5rem;
+  border-radius: 0.80rem;
+  border: 1px solid #d1d5db;
+  background-color: white;
+  font-size: 2.7rem;
+  outline-offset: 2px;
+}
+
+/* Efeito focus */
+.form-container input:focus {
+  border-color: #34d399;
+  box-shadow: 0 0 0 3px rgba(52, 211, 153, 0.3);
+}
+
+/* Botões gerais */
+.form-container button {
+  height: 5rem;
+  font-size: 1.25rem;
+  font-weight: 700;
+  border-radius: 0.80rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+/* Botão Entrar */
+.form-container button[type="submit"] {
+  background-color: #9dcfd8;
+  border: 1px solid #073f46;
+  color: black;
+}
+
+.form-container button[type="submit"]:hover {
+  background-color: #7cf0d3;
+}
+
+/* Botão Criar Conta */
+.form-container button[type="button"] {
+  background-color: #9dcfd8;
+  border: 1px solid #073f46;
+  color: black;
+}
+
+.form-container button[type="button"]:hover {
+  background-color: #7cf0d3;
+}
+
+/* Container dos botões */
+.buttons-wrapper {
+  display: flex;
+  gap: 1rem;
+}
+
+.buttons-wrapper button {
+  flex: 1;
 }
