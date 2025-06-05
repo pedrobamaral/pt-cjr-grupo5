@@ -62,9 +62,9 @@ model Avaliacao {
   disciplinaID Int
   conteudo     String
   humor        Emocao
-  usuario      Usuario      @relation(fields: [usuarioID], references: [id])
-  professor    Professor    @relation(fields: [professorID], references: [id])
-  disciplina   Disciplina   @relation(fields: [disciplinaID], references: [id])
+  usuario      Usuario      @relation(fields: [usuarioID], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  professor    Professor    @relation(fields: [professorID], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  disciplina   Disciplina   @relation(fields: [disciplinaID], references: [id], onDelete: Cascade, onUpdate: Cascade)
   comentarios  Comentario[]
   createdAt    DateTime     @default(now())
   updatedAt    DateTime     @updatedAt
@@ -79,8 +79,8 @@ model Comentario {
   usuarioId   Int
   avaliacaoId Int
   conteudo    String
-  usuario     Usuario   @relation(fields: [usuarioId], references: [id])
-  avaliacao   Avaliacao @relation(fields: [avaliacaoId], references: [id])
+  usuario     Usuario   @relation(fields: [usuarioId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  avaliacao   Avaliacao @relation(fields: [avaliacaoId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
 
