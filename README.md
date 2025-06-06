@@ -1,10 +1,9 @@
 # EduRanking
 O EduRanking é um sistema de avaliação de professores desenvolvido durante o Processo Trainee da **CJR** - Empresa Júnior de Computação da UnB do semestre 25.1.
 
-<center>
-<img src="./FrontEnd/public/images/logo_todos_sem_fundo.png" alt="Logo Geral" width="250"/>
-</center>
-
+<p align="center">
+  <img src="./FrontEnd/public/images/logo_todos_sem_fundo.png" alt="Logo Geral" width="250" />
+</p>
 
 ## Sobre o Projeto
 O grupo escolheu desenvolver o sistema baseado no filme **Divertidamente** da Pixar/Disney. O site será tematizado no filme e as avaliações de professores serão guiadas por uma emoção: Alegria, Tristeza, Raiva, Nojo e Medo. As funcionalidades do sistema serão: 
