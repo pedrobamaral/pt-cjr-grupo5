@@ -31,7 +31,10 @@ export default function Home() {
       {/* Lado do formulário */}
       <div className="w-4/7 h-full flex justify-center items-center bg-[#15589A]">
         <div className="form-container">
-          <h1>Avaliação de Professores</h1>
+          <div className="mb-6">
+            <h1>Edu Ranking</h1>
+            <h2>Avaliação de Professores</h2>
+          </div>
 
           <form onSubmit={formik.handleSubmit}>
             <div>
