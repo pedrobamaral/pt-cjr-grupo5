@@ -1,10 +1,13 @@
 export default function Cadastro() {
   return (
-    <main className="h-screen flex items-center justify-center bg-[#ffffff]">
-      <div className="w-full max-w-[700px] bg-white rounded-xl p-100 shadow-lg">
-        <div className="flex flex-col items-center justify-center mb-8">
-          <img src="/images/logo_main.jpeg" alt="Logo" className="w-1/2 mb-2" />
-          <h1 className="text-3xl font-bold text-[#90CAF9] text-center">
+      
+    <div className="flex w-full h-screen bg-[#90CAF9] ">
+      <div className="flex items-center justify-center w-full h-full">
+      <div className=" bg-[#90CAF9] flex">
+      <div className="w-full max-w-[700px] bg-white rounded-xl p-100 shadow-lg ">
+        <div className="flex items-center justify-center mb-8">
+          <img src="/images/teste.png" alt="Logo" className="w-1/3 mb-2" />
+          <h1 className="text-3xl font-bold text-[#fffff] text-center">
             Criar Conta
           </h1>
         </div>
@@ -33,6 +36,9 @@ export default function Cadastro() {
           </button>
         </form>
       </div>
-    </main>
+      </div>
+
+</div>
+    </div>
   );
 }
