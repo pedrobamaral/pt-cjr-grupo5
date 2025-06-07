@@ -18,6 +18,7 @@
   },
   "homepage": "https://github.com/pedrobamaral/pt-cjr-grupo5#readme",
   "dependencies": {
+    "@prisma/client": "^6.9.0",
     "formik": "^2.4.6",
     "yup": "^1.6.1"
   }
