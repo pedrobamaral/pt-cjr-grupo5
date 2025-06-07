@@ -1,16 +1,4 @@
 export type UserDto = {
-//     id Int @id @default(autoincrement())
-//   nome String
-//   email String @unique
-//   senha String
-//   departamento String
-//   curso String
-//   foto_perfil String?
-//   avaliacoes Avaliacao[]
-//   comentarios Comentario[]
-//   createdAt DateTime @default(now())
-//   updatedAt DateTime @updatedAt
-
     id?: number;
     nome: string;
     email: string;
