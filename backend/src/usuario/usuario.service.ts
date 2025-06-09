@@ -20,5 +20,57 @@ export class UsuarioService {
         return await this.prisma.usuario.findMany();
     }
 
+    async update(id: number, data: UsuarioDto) {
+        
+        const usuarioExists = await this.prisma.usuario.findUnique({
+            where: {
+                id,
+            }
+        });
 
+        if (!usuarioExists) {
+            throw new Error('Usuário não encontrado');
+        }
+
+        return await this.prisma.usuario.update({
+            data,
+            where: {
+                id,
+            }
+        })
+    }
+
+    async delete(id: number) {
+
+        const usuarioExists = await this.prisma.usuario.findUnique({
+            where: {
+                id,
+            }
+        });
+
+        if (!usuarioExists) {
+            throw new Error('Usuário não encontrado');
+        }
+
+        return await this.prisma.usuario.delete({
+            where: {
+                id,
+            }
+        })
+    }
+
+    async getById(id: number) {
+
+        const usuarioExists = await this.prisma.usuario.findUnique({
+            where: {
+                id,
+            }
+        });
+
+        if (!usuarioExists) {
+            throw new Error('Usuário não encontrado');
+        }
+
+        return usuarioExists;
+    }
 }
