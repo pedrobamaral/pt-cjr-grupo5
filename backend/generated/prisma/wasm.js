@@ -133,6 +133,7 @@ exports.Prisma.ProfessorScalarFieldEnum = {
   id: 'id',
   nome: 'nome',
   departamento: 'departamento',
+  disciplinaId: 'disciplinaId',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };
