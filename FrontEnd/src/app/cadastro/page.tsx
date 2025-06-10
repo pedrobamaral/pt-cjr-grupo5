@@ -20,7 +20,7 @@ export default function Home() {
   });
 
   return (
-    <main className="h-screen flex">
+    <div className="flex h-full w-full">
       {/* Lado da imagem */}
       <div className="w-3/7 h-full">
         <img
@@ -31,54 +31,41 @@ export default function Home() {
       </div>
 
       {/* Lado do formulário */}
-      <div className="w-4/7 h-full flex justify-center items-center bg-[#15589A]">
+      <div className="w-4/7 h-full flex justify-center items-center bg-">
         <div className="form-container">
-          <div className="mb-6">
-            <h1>Cadastro do Edu-Ranking</h1>
-            <h2>Cadastro</h2>
+          <div className="mb-4">
+            <img 
+              src="/images/logo-alegria.png" 
+              alt="Logo Alegria" 
+              className="w-20 h-auto"
+            />
+            <h2> <p className="text-black">Cadastro</p></h2>
           </div>
-
           <form onSubmit={formik.handleSubmit}>
             <div>
-              <label htmlFor="email">Nome: </label>
-              <br></br>
+              <label htmlFor="nome"> <p className="text-black mb-0"> Nome: </p> </label>
               <input
-                id="email"
-                type="email"
-                name="email"
+                id="nome"
+                type="text"
+                name="nome"
                 onChange={formik.handleChange}
-                value={formik.values.email}
-                placeholder="Digite seu email"
+                value={formik.values.nome}
+                placeholder="Digite seu nome"
               />
             </div>
-              <div>
-              <label htmlFor="email">Email: </label>
-              <br></br>
-              <input
-                id="email"
-                type="email"
-                name="email"
-                onChange={formik.handleChange}
-                value={formik.values.email}
-                placeholder="Digite seu email"
-              />
-            </div>
-
             <div>
-              <label htmlFor="password">Senha: </label>
-              <br></br>
+              <label htmlFor="email"> <p className="text-black mb-2 gap-0"> Email: </p> </label>
               <input
-                id="password"
-                type="password"
-                name="password"
+                id="email"
+                type="email"
+                name="email"
                 onChange={formik.handleChange}
-                value={formik.values.password}
-                placeholder="Digite sua senha"
+                value={formik.values.email}
+                placeholder="Digite seu email"
               />
             </div>
-             <div>
-              <label htmlFor="password">Curso: </label>
-              <br></br>
+            <div>
+              <label htmlFor="password"> <p className="text-black mt-0"> Senha: </p> </label>
               <input
                 id="password"
                 type="password"
@@ -89,8 +76,7 @@ export default function Home() {
               />
             </div>
             <div>
-              <label htmlFor="curso">Departamento: </label>
-              <br></br>
+              <label htmlFor="curso"> <p className="text-black mt-0"> Curso: </p> </label>
               <input
                 id="curso"
                 type="text"
@@ -100,7 +86,17 @@ export default function Home() {
                 placeholder="Digite seu curso"
               />
             </div>
-
+            <div>
+              <label htmlFor="departamento"> <p className="text-black mt-0"> Departamento: </p> </label>
+              <input
+                id="departamento"
+                type="text"
+                name="departamento"
+                onChange={formik.handleChange}
+                value={formik.values.departamento}
+                placeholder="Digite seu departamento"
+              />
+            </div>
             <div className="buttons-wrapper">
               <button type="submit">
                 Entrar
@@ -112,6 +108,6 @@ export default function Home() {
           </form>
         </div>
       </div>
-    </main>
+    </div>
   );
 }
