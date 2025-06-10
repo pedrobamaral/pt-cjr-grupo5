@@ -8,14 +8,12 @@ export default function Home() {
 
   const formik = useFormik({
     initialValues: {
-      nome: "",
       email: "",
       password: "",
-      curso: "",
-      departamento: "",
     },
     onSubmit: (values) => {
       console.log("Form values:", values);
+      // Aqui você pode implementar a lógica de autenticação
     },
   });
 
@@ -34,24 +32,12 @@ export default function Home() {
       <div className="w-4/7 h-full flex justify-center items-center bg-[#15589A]">
         <div className="form-container">
           <div className="mb-6">
-            <h1>Cadastro do Edu-Ranking</h1>
-            <h2>Cadastro</h2>
+            <h1>Edu Ranking</h1>
+            <h2>Avaliação de Professores</h2>
           </div>
 
           <form onSubmit={formik.handleSubmit}>
             <div>
-              <label htmlFor="email">Nome: </label>
-              <br></br>
-              <input
-                id="email"
-                type="email"
-                name="email"
-                onChange={formik.handleChange}
-                value={formik.values.email}
-                placeholder="Digite seu email"
-              />
-            </div>
-              <div>
               <label htmlFor="email">Email: </label>
               <br></br>
               <input
@@ -74,30 +60,6 @@ export default function Home() {
                 onChange={formik.handleChange}
                 value={formik.values.password}
                 placeholder="Digite sua senha"
-              />
-            </div>
-             <div>
-              <label htmlFor="password">Curso: </label>
-              <br></br>
-              <input
-                id="password"
-                type="password"
-                name="password"
-                onChange={formik.handleChange}
-                value={formik.values.password}
-                placeholder="Digite sua senha"
-              />
-            </div>
-            <div>
-              <label htmlFor="curso">Departamento: </label>
-              <br></br>
-              <input
-                id="curso"
-                type="text"
-                name="curso"
-                onChange={formik.handleChange}
-                value={formik.values.curso}
-                placeholder="Digite seu curso"
               />
             </div>
 
