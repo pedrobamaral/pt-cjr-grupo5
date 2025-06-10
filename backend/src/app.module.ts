@@ -5,10 +5,13 @@ import { UsuarioModule } from './usuario/usuario.module';
 import { AvaliacaoService } from './avaliacao/avaliacao.service';
 import { AvaliacaoController } from './avaliacao/avaliacao.controller';
 import { AvaliacaoModule } from './avaliacao/avaliacao.module';
+import { ProfessorService } from './professor/professor.service';
+import { ProfessorController } from './professor/professor.controller';
+import { ProfessorModule } from './professor/professor.module';
 
 @Module({
-  imports: [UsuarioModule, AvaliacaoModule],
-  controllers: [AppController],
-  providers: [AppService],
+  imports: [UsuarioModule, AvaliacaoModule, ProfessorModule],
+  controllers: [AppController, ProfessorController],
+  providers: [AppService, ProfessorService],
 })
 export class AppModule {}
