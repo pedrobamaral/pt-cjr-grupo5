@@ -13,8 +13,7 @@ export default function Home() {
     },
     onSubmit: (values) => {
       console.log("Form values:", values);
-      // Aqui você pode implementar a lógica de autenticação
-    },
+    }
   });
 
   return (
