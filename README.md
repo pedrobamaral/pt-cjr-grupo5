@@ -68,6 +68,34 @@ cd pt-cjr-grupo5
 
 ### Como rodar o Front End
 
+**1. Acesse a pasta do Front End**
+Caminhe até a pasta do FrontEnd com o comando:
+```
+cd FrontEnd
+```
+**2. Instale as dependências do Next.Js**
+No terminal, digite os comandos: 
+```
+npm install
+# ou
+yarn install
+```
+**3. Execute em modo de desenvolvimento**
+Rode o comando apropriado: 
+```
+npm run dev
+# ou
+yarn dev
+
+No backEnd se existir:
+npm run start:dev
+```
+**4. Acesse no navegador**
+
+```
+Para frontend Next.js: vá em http://localhost:3000
+```
+
 ### Como rodar o Back End
 
 **1. Acesse a pasta de Back End**  
