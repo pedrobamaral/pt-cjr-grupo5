@@ -11,7 +11,7 @@ import { ProfessorModule } from './professor/professor.module';
 
 @Module({
   imports: [UsuarioModule, AvaliacaoModule, ProfessorModule],
-  controllers: [AppController, ProfessorController],
-  providers: [AppService, ProfessorService],
+  controllers: [AppController],
+  providers: [AppService],
 })
 export class AppModule {}
