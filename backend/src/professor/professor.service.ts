@@ -7,8 +7,19 @@ export class ProfessorService {
     constructor (private prisma: PrismaService) {}
 
     async create (data: ProfessorDto) {
+        
+        const disciplina = await this.prisma.disciplina.findMany({where: {nome: data.disciplinas}});
+        
+        if(disciplina.length == 0){
+            throw new Error("Não existe essa disciplina!");
+        }
+
         const professor = await this.prisma.professor.create ({
-            data
+            data: {
+                nome: data.nome, 
+                departamento: data.nome, 
+                disciplinaId: disciplina[0].id
+            }
         });
 
         return professor;
@@ -30,7 +41,7 @@ export class ProfessorService {
         }
 
         await this.prisma.professor.update({
-            data,
+            data: {},
             where: {
                 id,
             }
