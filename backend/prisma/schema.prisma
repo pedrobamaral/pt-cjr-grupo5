@@ -22,8 +22,10 @@ model Usuario {
   departamento String
   curso String
   foto_perfil String?
-  avaliacoes Avaliacao[]
-  comentarios Comentario[]
+
+  avaliacoes Avaliacao[] @relation("UsuarioAvaliacoes")
+  comentarios Comentario[] @relation("UsuarioComentarios")
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
@@ -32,8 +34,9 @@ model Professor {
   id Int @id @default(autoincrement())
   nome String
   departamento String
-  disciplinas Disciplina[] 
-  avaliacoes Avaliacao[]
+  disciplinaId Int
+  disciplinas Disciplina @relation("DisciplinaProfessor", fields: [disciplinaId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  avaliacoes Avaliacao[] @relation("ProfessorAvaliacoes")
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
@@ -41,7 +44,7 @@ model Professor {
 model Disciplina {
   id Int @id @default(autoincrement())
   nome String
-  professores Professor[] 
+  professores Professor[] @relation("DisciplinaProfessor")
   avaliacoes Avaliacao[]
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -62,10 +65,10 @@ model Avaliacao {
   disciplinaID Int
   conteudo String
   humor Emocao
-  usuario Usuario @relation(fields: [usuarioID], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  professor Professor @relation(fields: [professorID], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  usuario Usuario @relation("UsuarioAvaliacoes", fields: [usuarioID], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  professor Professor @relation("ProfessorAvaliacoes", fields: [professorID], references: [id], onDelete: Cascade, onUpdate: Cascade)
   disciplina Disciplina @relation(fields: [disciplinaID], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  comentarios Comentario[]
+  comentarios Comentario[] @relation("AvaliacaoComentarios")
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -79,8 +82,8 @@ model Comentario {
   usuarioId Int
   avaliacaoId Int
   conteudo String
-  usuario Usuario @relation(fields: [usuarioId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  avaliacao Avaliacao @relation(fields: [avaliacaoId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  usuario Usuario @relation("UsuarioComentarios", fields: [usuarioId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  avaliacao Avaliacao @relation("AvaliacaoComentarios", fields: [avaliacaoId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
