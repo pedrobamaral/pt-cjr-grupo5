@@ -1,6 +1,6 @@
-import { Emocao } from "generated/prisma";
+import { Emocao } from "@prisma/client";
 
-export type AvaliacaoDto ={
+export type AvaliacaoDto = {
     usuarioID: number;
     professorID: number;
     disciplinaID: number;
