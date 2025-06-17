@@ -2,8 +2,8 @@
 dist
 node_modules
 build
-.env
 generated/prisma
+.env
 
 # Logs
 logs
