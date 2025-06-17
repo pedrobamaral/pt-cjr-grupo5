@@ -55,7 +55,7 @@ export default function Search({ placeHolder }: CardProps) {
   };
 
   return (
-    <div className="relative w-[500px]" ref={containerRef}>
+    <div className="relative w-auto" ref={containerRef}>
       <div className="flex items-center gap-3 px-4 rounded-[20px] bg-white w-full h-[50px] shrink-0 shadow">
         <img
           src="/images/lupa.svg"
