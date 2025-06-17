@@ -5,9 +5,10 @@ import { UsuarioModule } from './usuario/usuario.module';
 import { AvaliacaoService } from './avaliacao/avaliacao.service';
 import { AvaliacaoController } from './avaliacao/avaliacao.controller';
 import { AvaliacaoModule } from './avaliacao/avaliacao.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
-  imports: [UsuarioModule, AvaliacaoModule],
+  imports: [UsuarioModule, AvaliacaoModule, AuthModule],
   controllers: [AppController],
   providers: [AppService],
 })
