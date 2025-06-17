@@ -20,7 +20,7 @@ export class AvaliacaoService {
     }
 
     async update(id: number, data: AvaliacaoDto){
-            const avaliacaoExists = await this.prisma.avaliacao.findUnique({
+        const avaliacaoExists = await this.prisma.avaliacao.findUnique({
                 where: {
                     id,
                 }
@@ -38,7 +38,7 @@ export class AvaliacaoService {
             });
         }
 
-        async delete(id: number){
+    async delete(id: number){
         const avaliacaoExists = await this.prisma.avaliacao.findUnique({
             where: {
                 id,
@@ -56,7 +56,17 @@ export class AvaliacaoService {
         });
     }
 
+    async getById(id:number){
+        const avaliacaoExists = await this.prisma.avaliacao.findUnique({
+            where: {
+                id,
+            }
+        });
 
+        if(!avaliacaoExists){
+            throw new Error("Disciplina não encontrada!")
+        }
 
-    
+        return avaliacaoExists;
+    }
 }
