@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { GeistSans, GeistMono } from "geist/font";
+import { Inter } from "next/font/google";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -7,11 +7,16 @@ export const metadata: Metadata = {
   description: "Edu Ranking - Avaliação de Professores",
 };
 
+const inter = Inter({
+  subsets: ['latin'],
+  weight: ['400', '700']
+})
+
 export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="pt-BR" className={`${GeistSans.variable} ${GeistMono.variable}`}>
+    <html lang="pt-BR" className={`${inter.className}`}>
       <body className="font-sans antialiased min-h-screen">
         {children}
       </body>
