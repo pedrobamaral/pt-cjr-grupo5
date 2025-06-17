@@ -8,7 +8,7 @@ export class ProfessorService {
 
     async create (data: ProfessorDto) {
         
-        const disciplina = await this.prisma.disciplina.findMany({where: {nome: data.disciplinas}});
+        const disciplina = await this.prisma.disciplina.findMany({where: {id: data.disciplinaId}});
         
         if(disciplina.length == 0){
             throw new Error("Não existe essa disciplina!");
@@ -18,11 +18,12 @@ export class ProfessorService {
             data: {
                 nome: data.nome, 
                 departamento: data.departamento, 
-                disciplinaId: disciplina[0].id
+                disciplinaId: data.disciplinaId,
             }
         });
 
         return professor;
+        
     }
 
     async findAll() {
@@ -31,7 +32,7 @@ export class ProfessorService {
 
     async update(id: number, data: ProfessorDto) {
         
-        const disciplina = await this.prisma.disciplina.findMany({where: {nome: data.disciplinas}});
+        const disciplina = await this.prisma.disciplina.findMany({where: {id: data.disciplinaId}});
         
         if(disciplina.length == 0){
             throw new Error("Não existe essa disciplina!");

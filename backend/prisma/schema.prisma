@@ -35,7 +35,7 @@ model Professor {
   nome String
   departamento String
   disciplinaId Int
-  disciplinas Disciplina @relation("DisciplinaProfessor", fields: [disciplinaId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  disciplina   Disciplina @relation(fields: [disciplinaId], references: [id])
   avaliacoes Avaliacao[] @relation("ProfessorAvaliacoes")
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -44,7 +44,8 @@ model Professor {
 model Disciplina {
   id Int @id @default(autoincrement())
   nome String
-  professores Professor[] @relation("DisciplinaProfessor")
+  professorID String?
+  professores Professor[]
   avaliacoes Avaliacao[]
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
