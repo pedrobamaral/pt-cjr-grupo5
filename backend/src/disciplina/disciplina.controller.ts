@@ -18,17 +18,17 @@ export class DisciplinaController {
     }
 
     @Put(":id")
-    async update(@Param(":id") id:number, @Body() data: DisciplinaDto){
+    async update(@Param("id") id:number, @Body() data: DisciplinaDto){
         return this.disciplinaService.update(Number(id), data);
     }
 
     @Delete(":id")
-    async delete(@Param(":id") id:number){
+    async delete(@Param("id") id:number){
         return this.disciplinaService.delete(Number(id));
     }
 
     @Get(":id")
-    async getById(@Param(":id") id:number){
+    async getById(@Param("id") id:number){
         return this.disciplinaService.getById(Number(id));
     }
 }
