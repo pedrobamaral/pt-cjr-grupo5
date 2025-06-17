@@ -14,4 +14,9 @@ export class AvaliacaoService {
         
         return avaliacao;
     }
+
+    async findAll() {
+        return await this.prisma.avaliacao.findMany();
+    }
+    
 }
