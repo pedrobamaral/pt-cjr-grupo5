@@ -1,5 +1,6 @@
+import { Comentario } from "@prisma/client";
 
-export type Comentario = {
+export type ComentarioDTO = {
 
     UsuarioId: number;
     AvaliacaoId: number;
