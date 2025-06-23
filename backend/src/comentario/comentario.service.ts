@@ -6,19 +6,19 @@ import { ComentarioDTO } from './dto/comentario.dto';
 @Injectable()
 export class ComentarioService {
     getById(arg0: number) {
-        throw new Error('Method not implemented.');
+        throw new Error('Comentário não encontrado.');
     }
     delete(arg0: number) {
-        throw new Error('Method not implemented.');
+        throw new Error('Comentário não encontrado.');
     }
     create(data: ComentarioDTO) {
-        throw new Error('Method not implemented.');
+        throw new Error('Comentário não encontrado.');
     }
     findAll() {
-        throw new Error('Method not implemented.');
+        throw new Error('Comentário não encontrado.');
     }
     update(arg0: number, data: ComentarioDTO) {
-        throw new Error('Method not implemented.');
+        throw new Error('Comentário não encontrado.');
     }
 
     constructor(private prisma: PrismaService) {}
