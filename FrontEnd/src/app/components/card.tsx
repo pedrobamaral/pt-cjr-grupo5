@@ -1,14 +1,13 @@
-// components/Card.tsx
 import Link from "next/link"
 
 interface CardProps {
   imageSrc: string
   name: string
-  discipline: string
+  departament: string
   href?: string
 }
 
-export default function Card({ imageSrc, name, discipline, href }: CardProps) {
+export default function Card({ imageSrc, name, departament, href }: CardProps) {
   const content = (
     <div className="w-full max-w-[220px] h-[280px] p-2 rounded-2xl shadow-md bg-[#FEFEFE] mx-auto">
       <img
@@ -20,7 +19,7 @@ export default function Card({ imageSrc, name, discipline, href }: CardProps) {
         {name}
       </h2>
       <p className="w-full h-[30px] flex items-center justify-center text-sm text-center">
-        {discipline}
+        {departament}
       </p>
     </div>
   )

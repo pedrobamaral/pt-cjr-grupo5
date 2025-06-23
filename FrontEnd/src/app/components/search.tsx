@@ -1,42 +1,50 @@
 "use client"
 
-import { useState, useRef, useEffect } from "react";
-import Link from "next/link";
+import { useState, useRef, useEffect } from "react"
+import Link from "next/link"
 
 interface CardProps {
   placeHolder: string;
 }
 
-const MOCK_SUGESTOES = [
-  "Mayara Marques",
-  "Arthur Mendes",
-  "Arhur Fernandes",
-  "Pedro Amaral",
-  "Mais Atual",
-  "Ante-penúltimo",
-  "Penultimo",
-  "Último"
-];
-
 export default function Search({ placeHolder }: CardProps) {
   const [query, setQuery] = useState("");
+  const [professores, setProfessores] = useState<string[]>([]);
   const [filtered, setFiltered] = useState<string[]>([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
 
+  useEffect(() => {
+    async function fetchProfessores() {
+      try {
+        const response = await fetch("http://localhost:3001/professor");
+        if (!response.ok) throw new Error("Erro ao buscar professores");
+        const data = await response.json();
+
+        const nomes = data.map((prof: any) => prof.nome);
+        setProfessores(nomes);
+      } catch (error) {
+        console.error("Erro ao buscar professores:", error);
+      }
+    }
+
+    fetchProfessores();
+  }, []);
+
+  // filtra os nomes dos professores conforme o input
   useEffect(() => {
     if (query.trim() === "") {
       setFiltered([]);
       setShowSuggestions(false);
     } else {
       const lower = query.toLowerCase();
-      const result = MOCK_SUGESTOES.filter(s =>
-        s.toLowerCase().includes(lower)
+      const result = professores.filter((nome) =>
+        nome.toLowerCase().includes(lower)
       );
       setFiltered(result);
       setShowSuggestions(result.length > 0);
     }
-  }, [query]);
+  }, [query, professores]);
 
   // fecha sugestões se clicar fora
   useEffect(() => {
@@ -49,7 +57,7 @@ export default function Search({ placeHolder }: CardProps) {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  // formata url com base no nome da sugestão
+  // formata URL
   const formatUrl = (text: string) => {
     return `/search/${text.toLowerCase().replace(/\s+/g, '-')}`;
   };
