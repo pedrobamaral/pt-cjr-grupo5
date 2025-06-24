@@ -38,7 +38,7 @@ export class AuthService {
     if (!usuario) {
       console.error('[AuthService] ERRO: Usuário não encontrado no banco de dados.');
       console.log('-------------------------------------------\n');
-      throw new Error('Usuário não encontrado');
+      throw new Error('Email ou senha inválidos');
     }
 
     console.log('[AuthService] Usuário encontrado no banco de dados:', usuario.email);
@@ -57,7 +57,7 @@ export class AuthService {
     } else {
       console.error('[AuthService] ERRO: A senha é inválida!');
       console.log('-------------------------------------------\n');
-      throw new Error('Senha inválida');
+      throw new Error('Email ou senha inválidos');
     }
   }
 }
