@@ -1,12 +1,14 @@
 import { Controller, Post, Body, Get, Put, Param, Delete } from '@nestjs/common';
 import { UsuarioDto } from './dto/usuario.dto';
 import { UsuarioService } from './usuario.service';
+import { IsPublic } from 'src/auth/decorators/is-public.decorator';
 
 @Controller('usuario')
 export class UsuarioController {
     
     constructor (private readonly usuarioService: UsuarioService) {}
 
+    @IsPublic()
     @Post()
     
     async create(@Body() data: UsuarioDto) {
