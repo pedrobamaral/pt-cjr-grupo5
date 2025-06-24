@@ -1,13 +1,29 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import {
+  ExecutionContext,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 
 @Injectable()
 export class LocalAuthGuard extends AuthGuard('local') {
-  handleRequest(err, usuario, info) {
-    console.log('[local-auth.guard] Usuario recebido:', usuario);
-    if (err || !usuario) {
-      throw err || new UnauthorizedException('Credenciais inválidas ou erro na autenticação.');
-    }
-    return usuario;
+  canActivate(context: ExecutionContext) {
+    console.log('Verificando a ativação do guard');
+    return super.canActivate(context);
+  }
+
+  handleRequest(err, user) {
+    console.log('HandleRequest chamado');
+
+    if (err) {
+      throw new UnauthorizedException(err.message || 'Unauthorized');
+  }
+
+  if (!user) {
+      throw new UnauthorizedException('Usuário não encontrado ou credenciais inválidas');
+  }
+
+
+    return user;
   }
 }
