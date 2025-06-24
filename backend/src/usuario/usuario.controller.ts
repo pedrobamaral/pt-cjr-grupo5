@@ -8,7 +8,6 @@ export class UsuarioController {
     
     constructor (private readonly usuarioService: UsuarioService) {}
 
-    @IsPublic()
     @Post()
     
     async create(@Body() data: UsuarioDto) {
