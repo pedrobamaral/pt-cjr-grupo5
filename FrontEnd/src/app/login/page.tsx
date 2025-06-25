@@ -2,18 +2,26 @@
 
 import { useFormik } from "formik";
 import { useRouter } from "next/navigation";
+import { login } from "../services/authService"; 
+import { useState } from "react";
 
 export default function Home() {
   const router = useRouter();
+  const [error, setError] = useState("");
 
   const formik = useFormik({
     initialValues: {
       email: "",
       password: "",
     },
-    onSubmit: (values) => {
-      console.log("Form values:", values);
-      // Aqui você pode implementar a lógica de autenticação
+    onSubmit: async (values) => {
+      setError("");
+      try {
+        await login(values.email, values.password);
+        router.push("/"); // redireciona para a página principal após login
+      } catch (err: any) {
+        setError(err);
+      }
     },
   });
 
@@ -39,7 +47,7 @@ export default function Home() {
           <form onSubmit={formik.handleSubmit}>
             <div>
               <label htmlFor="email">Email: </label>
-              <br></br>
+              <br />
               <input
                 id="email"
                 type="email"
@@ -52,7 +60,7 @@ export default function Home() {
 
             <div>
               <label htmlFor="password">Senha: </label>
-              <br></br>
+              <br />
               <input
                 id="password"
                 type="password"
@@ -62,6 +70,13 @@ export default function Home() {
                 placeholder="Digite sua senha"
               />
             </div>
+
+            {/* Exibe erro, se houver */}
+            {error && (
+              <div className="text-red-500 mt-2">
+                {error}
+              </div>
+            )}
 
             <div className="buttons-wrapper">
               <button type="submit">
