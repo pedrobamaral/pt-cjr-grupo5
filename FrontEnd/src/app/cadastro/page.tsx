@@ -102,8 +102,8 @@ export default function Home() {
             </div>
 
             <div className="buttons-wrapper">
-              <button type="submit">
-                Entrar
+              <button type="submit" onClick={() => router.push("/login")}>
+                Voltar
               </button>
               <button type="button" onClick={() => router.push("/cadastro")}>
                 Criar Conta
