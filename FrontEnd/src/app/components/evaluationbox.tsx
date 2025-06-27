@@ -1,6 +1,8 @@
 // components/EvaluationBox.tsx
+"use client";
 import { MessageCircle } from 'lucide-react';
 import { Edit, Trash2 } from 'lucide-react';
+import { useState } from 'react';
 
 export interface EvaluationProps {
   studentName: string;
@@ -11,6 +13,7 @@ export interface EvaluationProps {
   text: string;
   commentsCount: number;
 }
+// ele nao deixa usar o userState
 
 export default function EvaluationBox({
   studentName,
@@ -21,6 +24,7 @@ export default function EvaluationBox({
   text,
   commentsCount,
 }: EvaluationProps) {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   return (
     <div className="bg-[#15589A] rounded-2xl h-60 w-205 flex flex-col justify-between p-4">
   {/* Header */}
@@ -51,10 +55,16 @@ export default function EvaluationBox({
       <MessageCircle size={20} />
       <span>{commentsCount} comentário{commentsCount !== 1 ? "s" : ""}</span>
     </div>
-    <div className="flex flex-row gap-2">
-      <Edit size={20} />
-      <Trash2 size={20} />
-    </div>
+    {isLoggedIn && (
+      <div className="flex flex-row gap-2">
+        <button>
+          <Edit size={20}/>
+        </button>
+        <button>
+          <Trash2 size={20}/>
+        </button>
+      </div>
+    )}
   </div>
 </div>
 
