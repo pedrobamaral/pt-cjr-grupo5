@@ -4,7 +4,13 @@ import Image from "next/image";
 import { useState } from "react";
 import { LogOut } from "lucide-react";
 
-export default function Navbar() {
+export interface AlunoProps{
+  foto: string;
+}
+
+export default function Navbar({
+  foto,
+}: AlunoProps) {
 
   const [isLoggedIn, setIsLoggedIn] = useState(true);
 
@@ -27,7 +33,7 @@ export default function Navbar() {
         {isLoggedIn ? (
           <div className="flex flex-row gap-10">
             <Link href="/perfil">
-              <img src="/images/logo.png" 
+              <img src={foto}
               className="w-17 h-17 rounded-full" 
               alt="User Profile" />
             </Link>

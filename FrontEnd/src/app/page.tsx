@@ -55,7 +55,7 @@ export default function Page() {
   return (
     <main className="pt-[120px] py-[32px] px-[64px] flex flex-col gap-8">
       <div className="fixed top-0 left-0 w-full z-50">
-        <Navbar />
+        <Navbar foto={""} />
       </div>
 
       <div className="flex flex-row items-center justify-between">
