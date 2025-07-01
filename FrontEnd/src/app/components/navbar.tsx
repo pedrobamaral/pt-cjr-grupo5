@@ -33,7 +33,7 @@ export default function Navbar({
         {isLoggedIn ? (
           <div className="flex flex-row gap-10">
             <Link href="/perfil">
-              <img src={foto}
+              <img src={foto || "https://i.pinimg.com/736x/e8/d7/d0/e8d7d05f392d9c2cf0285ce928fb9f4a.jpg"}
               className="w-17 h-17 rounded-full" 
               alt="User Profile" />
             </Link>
