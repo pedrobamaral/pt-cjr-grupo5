@@ -2,9 +2,12 @@
 
 import { useFormik } from "formik";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { cadastrar } from "../services/authService";
 
-export default function Home() {
+export default function CadastroPage() {
   const router = useRouter();
+  const [error, setError] = useState("");
 
   const formik = useFormik({
     initialValues: {
@@ -14,8 +17,15 @@ export default function Home() {
       curso: "",
       departamento: "",
     },
-    onSubmit: (values) => {
-      console.log("Form values:", values);
+    onSubmit: async (values) => {
+      setError("");
+      try {
+        await cadastrar(values.nome, values.email, values.password);
+        alert("Cadastro realizado com sucesso!");
+        router.push("/login"); // redireciona para login
+      } catch (err: any) {
+        setError(err?.message || "Erro ao realizar o cadastro");
+      }
     },
   });
 
@@ -40,20 +50,21 @@ export default function Home() {
 
           <form onSubmit={formik.handleSubmit}>
             <div>
-              <label htmlFor="email">Nome: </label>
-              <br></br>
+              <label htmlFor="nome">Nome:</label>
+              <br />
               <input
-                id="email"
-                type="email"
-                name="email"
+                id="nome"
+                type="text"
+                name="nome"
                 onChange={formik.handleChange}
-                value={formik.values.email}
-                placeholder="Digite seu email"
+                value={formik.values.nome}
+                placeholder="Digite seu nome"
               />
             </div>
-              <div>
-              <label htmlFor="email">Email: </label>
-              <br></br>
+
+            <div>
+              <label htmlFor="email">Email:</label>
+              <br />
               <input
                 id="email"
                 type="email"
@@ -65,8 +76,8 @@ export default function Home() {
             </div>
 
             <div>
-              <label htmlFor="password">Senha: </label>
-              <br></br>
+              <label htmlFor="password">Senha:</label>
+              <br />
               <input
                 id="password"
                 type="password"
@@ -76,21 +87,10 @@ export default function Home() {
                 placeholder="Digite sua senha"
               />
             </div>
-             <div>
-              <label htmlFor="password">Curso: </label>
-              <br></br>
-              <input
-                id="password"
-                type="password"
-                name="password"
-                onChange={formik.handleChange}
-                value={formik.values.password}
-                placeholder="Digite sua senha"
-              />
-            </div>
+
             <div>
-              <label htmlFor="curso">Departamento: </label>
-              <br></br>
+              <label htmlFor="curso">Curso:</label>
+              <br />
               <input
                 id="curso"
                 type="text"
@@ -101,7 +101,32 @@ export default function Home() {
               />
             </div>
 
+            <div>
+              <label htmlFor="departamento">Departamento:</label>
+              <br />
+              <input
+                id="departamento"
+                type="text"
+                name="departamento"
+                onChange={formik.handleChange}
+                value={formik.values.departamento}
+                placeholder="Digite seu departamento"
+              />
+            </div>
+
+            {/* Mensagem de erro */}
+            {error && (
+              <div className="text-red-500 mt-2">
+                {error}
+              </div>
+            )}
+
             <div className="buttons-wrapper">
+              feat/login-integration
+              <button type="submit">Cadastrar</button>
+              <button type="button" onClick={() => router.push("/login")}>
+                Já tenho conta
+
               <button type="submit" onClick={() => router.push("/login")}>
                 Voltar
               </button>
