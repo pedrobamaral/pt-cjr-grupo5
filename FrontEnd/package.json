@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@next/font": "^14.2.15",
+    "axios": "^1.10.0",
     "formik": "^2.4.6",
     "geist": "^1.4.2",
     "keen-slider": "^6.8.6",

@@ -2,8 +2,44 @@
 
 import { useFormik } from "formik";
 import { useRouter } from "next/navigation";
+import api from "../services/api";
+import { useEffect, useRef, useState } from "react";
 
 export default function Home() {
+
+    const [users, setUsers] = useState([])
+  
+    const inputName = useRef<HTMLInputElement>(null) /*useRef()*/
+  
+    async function getUsers() {
+      const usersFromApi = await api.get('/cadastro')
+  
+      setUsers(usersFromApi.data)
+    }
+
+    async function createUsers() { 
+      if (inputName.current) {
+        await api.post('/cadastro', {
+          nome: inputName.current.value
+        })
+      }
+
+      /*await api.post('/cadastro', {
+      nome: inputName.current.value
+      }*/
+
+      getUsers()
+    }
+
+    /*async function deleteUsers(id) {
+      await api.delete(`/cadastro/${id}`)
+      getUsers()
+    }*/
+  
+    useEffect(() => {
+      getUsers()
+    }, [])
+
   const router = useRouter();
 
   const formik = useFormik({
@@ -40,15 +76,16 @@ export default function Home() {
 
           <form onSubmit={formik.handleSubmit}>
             <div>
-              <label htmlFor="email">Nome: </label>
+              <label htmlFor="nome">Nome: </label>
               <br></br>
               <input
-                id="email"
-                type="email"
-                name="email"
-                onChange={formik.handleChange}
-                value={formik.values.email}
-                placeholder="Digite seu email"
+                id="nome"
+                type="nome"
+                name="nome"
+                //onChange={formik.handleChange}
+                //value={formik.values.nome}
+                ref={inputName}
+                placeholder="Digite seu nome"
               />
             </div>
               <div>
@@ -105,7 +142,7 @@ export default function Home() {
               <button type="submit">
                 Entrar
               </button>
-              <button type="button" onClick={() => router.push("/cadastro")}>
+              <button type="button" onClick={() => router.push("/cadastro")}> {/*onClick={createUsers}*/}
                 Criar Conta
               </button>
             </div>

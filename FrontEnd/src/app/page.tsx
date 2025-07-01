@@ -8,6 +8,7 @@ import { ChevronLeft, ChevronRight } from "lucide-react"
 import Navbar from "./components/navbar"
 import Card from "./components/card"
 import Search from "./components/search"
+import Router from "next/router"
 
 type AboutType = {
   id: number;
@@ -51,6 +52,11 @@ export default function Page() {
     }
     fetchProfessores()
   }, [])
+
+  function paginaProfessor(id: number){
+    localStorage.setItem('profID', id.toString());
+    Router.push('/professor');
+  }
 
   return (
     <main className="pt-[120px] py-[32px] px-[64px] flex flex-col gap-8">

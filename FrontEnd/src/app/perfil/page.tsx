@@ -1,9 +1,12 @@
 "use client";
+import { useEffect, useRef } from 'react';
 import React from 'react';
 import Navbar from '../components/navbar';
 import { Mail, Building} from 'lucide-react';
 import { useState } from 'react';
-import AvaliationBox from '../components/evaluationbox';
+import EvaluationBox from '../components/evaluationbox';
+import api from '../services/api'
+
 
 // Mock data for avaliações
 const mockAvaliacoes = [
@@ -24,9 +27,23 @@ export default function Perfil() {
 
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
+  // const [users, setUsers] = userState([])
+
+  // const inputName = useRef()
+
+  // async function getUsers() {
+  //   const usersFromApi = await api.get('/perfil')
+
+  //   setUsers(usersFromApi.data)
+  // }
+
+  // useEffect(() => {
+  //   getUsers()
+  // }, [])
+
   return (
     <div className="min-h-screen">
-      <Navbar />
+      <Navbar foto={''} />
       <main>
           <div className="relative">
             <div className="w-full max-w-4xl mx-auto px-4 relative">
@@ -64,7 +81,7 @@ export default function Perfil() {
                       {/* Lista de avaliações */}
                       <section className="flex flex-col gap-6">
                         {mockAvaliacoes.map((av, i) => (
-                          <AvaliationBox studentName={''} date={''} time={''} discipline={''} teacherName={''} text={''} commentsCount={0} key={i} {...av} />
+                          <EvaluationBox foto={''} studentName={''} date={''} time={''} discipline={''} teacherName={''} text={''} commentsCount={0} key={i} {...av} />
                         ))}
                       </section>
                     </div>
