@@ -8,6 +8,7 @@ import { ChevronLeft, ChevronRight } from "lucide-react"
 import Navbar from "./components/navbar"
 import Card from "./components/card"
 import Search from "./components/search"
+import Modal from "./components/modal"
 
 type AboutType = {
   id: number;
@@ -19,6 +20,8 @@ type AboutType = {
 
 export default function Page() {
   const [professores, setProfessores] = useState<AboutType[]>([])
+  const [isModalOpen, setIsModalOpen] = useState(false) 
+  const [selectedProfessor, setSelectedProfessor] = useState<AboutType | null>(null)
   const [sliderRef, instanceRef] = useKeenSlider({
     loop: false,
     slides: {
@@ -52,6 +55,18 @@ export default function Page() {
     fetchProfessores()
   }, [])
 
+  // Função para abrir o modal com os dados do professor
+  const handleOpenModal = (professor: AboutType) => {
+    setSelectedProfessor(professor)
+    setIsModalOpen(true)
+  }
+
+  // Função para fechar o modal
+  const handleCloseModal = () => {
+    setIsModalOpen(false)
+    setSelectedProfessor(null) // Limpa o professor selecionado ao fechar
+  }
+
   return (
     <main className="pt-[120px] py-[32px] px-[64px] flex flex-col gap-8">
       <div className="fixed top-0 left-0 w-full z-50">
@@ -65,13 +80,18 @@ export default function Page() {
 
       <div className="grid grid-cols-4 gap-6">
         {professores.slice(0, 4).map((prof) => (
-          <Card
+          <div
             key={prof.id}
-            name={prof.nome}
-            departament={prof.departamento}
-            imageSrc="https://i.pinimg.com/736x/05/6e/bd/056ebd21a16dde6a3f299e9443607598.jpg"
-            href="/#"
-          />
+            onClick={() => handleOpenModal(prof)}
+            className="cursor-pointer"
+          >
+            <Card
+              name={prof.nome}
+              departament={prof.departamento}
+              imageSrc="https://i.pinimg.com/736x/05/6e/bd/056ebd21a16dde6a3f299e9443607598.jpg"
+              href="#"
+            />
+          </div>
         ))}
       </div>
 
@@ -82,12 +102,16 @@ export default function Page() {
       <div className="relative px-4 mt-4">
         <div ref={sliderRef} className="keen-slider">
           {professores.map((prof) => (
-            <div key={prof.id} className="keen-slider__slide">
+            <div
+              key={prof.id}
+              className="keen-slider__slide cursor-pointer" 
+              onClick={() => handleOpenModal(prof)} 
+            >
               <Card
                 imageSrc="https://i.pinimg.com/736x/05/6e/bd/056ebd21a16dde6a3f299e9443607598.jpg"
                 name={prof.nome}
                 departament={prof.departamento}
-                href="/#"
+                href="#"
               />
             </div>
           ))}
@@ -110,6 +134,22 @@ export default function Page() {
           </>
         )}
       </div>
+
+      <Modal isOpen={isModalOpen} onClose={handleCloseModal}>
+        {selectedProfessor ? (
+          <div>
+            <h3 className="text-xl font-bold mb-2">{selectedProfessor.nome}</h3>
+            <p className="text-gray-700">Departamento: {selectedProfessor.departamento}</p>
+            {/* adicionar mais detalhes aqui, como avaliações, etc. */}
+            {selectedProfessor.avaliacoes && (
+                <p className="mt-2 text-gray-600">Avaliações: {selectedProfessor.avaliacoes}</p>
+            )}
+            {/* Adicione outras informações do professor conforme necessário */}
+          </div>
+        ) : (
+          <p>Nenhum professor selecionado.</p>
+        )}
+      </Modal>
     </main>
   )
 }
