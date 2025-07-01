@@ -1,0 +1,91 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+model Usuario {
+  id Int @id @default(autoincrement())
+  nome String
+  email String @unique
+  senha String
+  departamento String
+  curso String
+  foto_perfil String?
+
+  avaliacoes Avaliacao[] @relation("UsuarioAvaliacoes")
+  comentarios Comentario[] @relation("UsuarioComentarios")
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Professor {
+  id Int @id @default(autoincrement())
+  nome String
+  departamento String
+  disciplinaId Int
+  disciplinas Disciplina @relation("DisciplinaProfessor", fields: [disciplinaId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  avaliacoes Avaliacao[] @relation("ProfessorAvaliacoes")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Disciplina {
+  id Int @id @default(autoincrement())
+  nome String
+  professores Professor[] @relation("DisciplinaProfessor")
+  avaliacoes Avaliacao[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+enum Emocao {
+  ALEGRIA
+  TRISTEZA
+  RAIVA
+  MEDO
+  NOJO
+}
+
+model Avaliacao {
+  id Int @id @default(autoincrement())
+  usuarioID Int
+  professorID Int
+  disciplinaID Int
+  conteudo String
+  humor Emocao
+  usuario Usuario @relation("UsuarioAvaliacoes", fields: [usuarioID], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  professor Professor @relation("ProfessorAvaliacoes", fields: [professorID], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  disciplina Disciplina @relation(fields: [disciplinaID], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  comentarios Comentario[] @relation("AvaliacaoComentarios")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([usuarioID])
+  @@index([professorID])
+  @@index([disciplinaID])
+}
+
+model Comentario {
+  id Int @id @default(autoincrement())
+  usuarioId Int
+  avaliacaoId Int
+  conteudo String
+  usuario Usuario @relation("UsuarioComentarios", fields: [usuarioId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  avaliacao Avaliacao @relation("AvaliacaoComentarios", fields: [avaliacaoId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([usuarioId])
+  @@index([avaliacaoId])
+}

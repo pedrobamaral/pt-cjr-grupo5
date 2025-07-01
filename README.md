@@ -86,9 +86,14 @@ npm install @nestjs/platform-express
 npm install prisma -g
 ```
 
-**4. Inicialize o BackEnd**
+**4. Visualize o BackEnd**
 ```
 npx prisma studio
+```
+
+**5. Rode o BackEnd**
+```
+npm run start:dev
 ```
 
 
