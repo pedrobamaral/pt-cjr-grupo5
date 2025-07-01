@@ -1,8 +1,8 @@
 import api from './api';
 
-export async function login(email: string, senha: string) {
+export async function login(email: string, password: string) {
   try {
-    const response = await api.post('/login', { email, senha });
+    const response = await api.post('/login', { email, password });
 
     const token = response.data.access_token;
     localStorage.setItem('token', token);
@@ -13,12 +13,12 @@ export async function login(email: string, senha: string) {
   }
 }
 
-export async function cadastrar(nome: string, email: string, senha: string) {
+export async function cadastrar(nome: string, email: string, password: string) {
   try {
     const response = await api.post('/usuarios', {
       nome,
       email,
-      senha,
+      password,
     });
 
     return response.data;
