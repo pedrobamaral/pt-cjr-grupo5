@@ -13,12 +13,14 @@ export async function login(email: string, password: string) {
   }
 }
 
-export async function cadastrar(nome: string, email: string, password: string) {
+export async function cadastrar(nome: string, email: string, senha: string, curso: string, departamento: string) {
   try {
-    const response = await api.post('/usuarios', {
+    const response = await api.post('/usuario', {
       nome,
       email,
-      password,
+      senha,
+      curso,
+      departamento
     });
 
     return response.data;

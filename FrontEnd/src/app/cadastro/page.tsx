@@ -20,7 +20,7 @@ export default function CadastroPage() {
     onSubmit: async (values) => {
       setError("");
       try {
-        await cadastrar(values.nome, values.email, values.password);
+        await cadastrar(values.nome, values.email, values.password, values.curso, values.departamento);
         alert("Cadastro realizado com sucesso!");
         router.push("/login"); // redireciona para login
       } catch (err: any) {
@@ -76,7 +76,7 @@ export default function CadastroPage() {
             </div>
 
             <div>
-              <label htmlFor="password">Senha:</label>
+              <label htmlFor="password">password:</label>
               <br />
               <input
                 id="password"
@@ -84,7 +84,7 @@ export default function CadastroPage() {
                 name="password"
                 onChange={formik.handleChange}
                 value={formik.values.password}
-                placeholder="Digite sua senha"
+                placeholder="Digite sua password"
               />
             </div>
 
