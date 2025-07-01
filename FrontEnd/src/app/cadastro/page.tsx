@@ -122,16 +122,9 @@ export default function CadastroPage() {
             )}
 
             <div className="buttons-wrapper">
-              feat/login-integration
               <button type="submit">Cadastrar</button>
               <button type="button" onClick={() => router.push("/login")}>
                 Já tenho conta
-
-              <button type="submit" onClick={() => router.push("/login")}>
-                Voltar
-              </button>
-              <button type="button" onClick={() => router.push("/cadastro")}>
-                Criar Conta
               </button>
             </div>
           </form>
