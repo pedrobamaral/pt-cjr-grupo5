@@ -25,6 +25,7 @@ export default function Professor() {
       if(resposta.ok){
         const data = await resposta.json();
         setProfessor(data);
+        console.log(data);
       } else {
         console.error("Erro ao busca o professor: ${resposta.status}");
       }
@@ -47,7 +48,7 @@ export default function Professor() {
                         <div className="pl-20 pt-23">
                             <h1 className="text-2xl font-semibold">{professor.nome}</h1>
                             <p className="flex text-gray-600 items-center pt-6"><Building className="mr-1"/>{professor.departamento}</p>
-                            <p className="flex text-gray-600 items-center pt-3"><BookOpen className="mr-1"/>{professor?.disciplinas}</p>
+                            <p className="flex text-gray-600 items-center pt-3"><BookOpen className="mr-1"/>{professor.disciplinas}</p>
                         </div>
                         <hr className="border-[#595652] my-6"/>
                         <h1 className="text-2xl pl-6 pb-6 font-medium">Avaliações</h1>

@@ -8,8 +8,8 @@ import { ChevronLeft, ChevronRight } from "lucide-react"
 import Navbar from "./components/navbar"
 import Card from "./components/card"
 import Search from "./components/search"
-import Router from "next/router"
 import ModalProf from "./components/modalProf"
+import { useRouter } from "next/navigation"
 
 type AboutType = {
   id: number;
@@ -24,6 +24,8 @@ export default function Page() {
   const [professores, setProfessores] = useState<AboutType[]>([])
   const [isLoggedIn, setIsLoggedIn] = useState(true)
   const [showModal, setShowModal] = useState(false)
+  const router = useRouter();
+  
 
    const [sliderRef, instanceRef] = useKeenSlider({
     loop: false,
@@ -66,7 +68,7 @@ export default function Page() {
 
   function paginaProfessor(id: number){
     localStorage.setItem('profID', id.toString());
-    Router.push('/professor');
+    router.push('/professor');
   }
 
   return (
@@ -84,13 +86,19 @@ export default function Page() {
 
       <div className="grid grid-cols-4 gap-6">
         {professores.slice(0, 4).map((prof) => (
-          <Card
-            key={prof.id}
-            name={prof.nome}
-            departament={prof.departamento}
-            imageSrc="https://i.pinimg.com/736x/05/6e/bd/056ebd21a16dde6a3f299e9443607598.jpg"
-            onClick={() => paginaProfessor(prof.id)}
-          />
+          <div key={prof.id} className="w-full max-w-[220px] h-[280px] p-2 rounded-2xl shadow-md bg-[#FEFEFE] mx-auto" onClick={() => paginaProfessor(prof.id)}>
+            <img
+              src="https://i.pinimg.com/736x/05/6e/bd/056ebd21a16dde6a3f299e9443607598.jpg"
+              alt={prof.nome}
+              className="w-[160px] h-[160px] object-cover mx-auto rounded-2xl"
+            />
+            <h2 className="w-full h-[30px] flex items-center justify-center font-semibold text-center mt-2">
+              {prof.nome}
+            </h2>
+            <p className="w-full h-[30px] flex items-center justify-center text-sm text-center">
+              {prof.departamento}
+            </p>
+          </div>
         ))}
       </div>
 
@@ -116,14 +124,21 @@ export default function Page() {
       <div className="relative px-4 mt-4">
         <div ref={sliderRef} className="keen-slider">
           {professores.map((prof) => (
-            <div key={prof.id} className="keen-slider__slide">
-              <Card
-                imageSrc="https://i.pinimg.com/736x/05/6e/bd/056ebd21a16dde6a3f299e9443607598.jpg"
-                name={prof.nome}
-                departament={prof.departamento}
-                onClick={() => paginaProfessor(prof.id)}
-              />
-            </div>
+            <button key={prof.id} className="keen-slider__slide" onClick={() => paginaProfessor(prof.id)}>
+              <div className="w-full max-w-[220px] h-[280px] p-2 rounded-2xl shadow-md bg-[#FEFEFE] mx-auto">
+                <img
+                  src="https://i.pinimg.com/736x/05/6e/bd/056ebd21a16dde6a3f299e9443607598.jpg"
+                  alt={prof.nome}
+                  className="w-[160px] h-[160px] object-cover mx-auto rounded-2xl"
+                />
+                <h2 className="w-full h-[30px] flex items-center justify-center font-semibold text-center mt-2">
+                  {prof.nome}
+                </h2>
+                <p className="w-full h-[30px] flex items-center justify-center text-sm text-center">
+                  {prof.departamento}
+                </p>
+              </div>
+            </button>
           ))}
         </div>
 
