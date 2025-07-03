@@ -1,8 +1,8 @@
+'use client'
 import {BookOpen, Building} from "lucide-react";
 import Navbar from "../components/navbar";
 import EvaluationBox from "../components/evaluationbox";
 import { useEffect, useState } from "react";
-import { error } from "console";
 
 
 export default function Professor() {
@@ -29,7 +29,7 @@ export default function Professor() {
         console.error("Erro ao busca o professor: ${resposta.status}");
       }
     } catch {
-      console.error("Erro ao buscar o professor:", error);
+      console.error("Erro ao buscar o professor:");
     }
   }
    

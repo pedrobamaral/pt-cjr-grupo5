@@ -1,6 +1,7 @@
 import { Body, Controller, Delete, Get, Param, Post, Put } from '@nestjs/common';
 import { ProfessorService } from './professor.service';
 import { ProfessorDto } from './dto/professor.dto';
+import { IsPublic } from 'src/auth/decorators/is-public.decorator';
 
 @Controller('professor')
 export class ProfessorController {
@@ -8,11 +9,13 @@ export class ProfessorController {
     constructor (private readonly professorService: ProfessorService) {}
 
     @Post()
+    @IsPublic()
     async create(@Body() data: ProfessorDto) {
         return this.professorService.create(data);
     }
 
     @Get()
+    @IsPublic()
     async findAll() {
         return this.professorService.findAll();
     }

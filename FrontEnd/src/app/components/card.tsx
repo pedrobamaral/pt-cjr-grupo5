@@ -4,10 +4,10 @@ interface CardProps {
   imageSrc: string
   name: string
   departament: string
-  href?: string
+  onClick?: () => void;
 }
 
-export default function Card({ imageSrc, name, departament, href }: CardProps) {
+export default function Card({ imageSrc, name, departament}: CardProps) {
   const content = (
     <div className="w-full max-w-[220px] h-[280px] p-2 rounded-2xl shadow-md bg-[#FEFEFE] mx-auto">
       <img
@@ -23,5 +23,4 @@ export default function Card({ imageSrc, name, departament, href }: CardProps) {
       </p>
     </div>
   )
-  return href ? <Link href={href}>{content}</Link> : content
 }

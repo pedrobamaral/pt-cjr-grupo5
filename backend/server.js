@@ -8,16 +8,13 @@ const app = express()
 app.use(express.json())
 app.use(cors())
 
-app.post('/cadastro', async (req, res) => {
+app.post('/professor', async (req, res) => {
 
-    await prisma.usuario.create({
+    await prisma.professor.create({
         data: {
             nome: req.body.nome,
-            email: req.body.email,
-            senha: req.body.senha,
             departamento: req.body.departamento,
-            curso: req.body.curso,
-            foto_perfil: req.body.foto_perfil
+            disciplinas: req.body.disciplinas
         }
     })
 
@@ -25,37 +22,34 @@ app.post('/cadastro', async (req, res) => {
 
 })
 
-app.get('/cadastro', async (req, res) => {
+app.get('/professor', async (req, res) => {
 
-    const users = await prisma.usuario.findMany()
+    const users = await prisma.professor.findMany()
 
     res.status(200).json(users)
 })
 
-app.put('/cadastro/:id', async (req, res) => {
+app.put('/professor/:id', async (req, res) => {
 
     const id = parseInt(req.params.id);
 
-    await prisma.usuario.update({
+    await prisma.professor.update({
         where: {
             id: id
         },
         data: {
             nome: req.body.nome,
-            email: req.body.email,
-            senha: req.body.senha,
             departamento: req.body.departamento,
-            curso: req.body.curso,
-            foto_perfil: req.body.foto_perfil
+            disciplinas: req.body.disciplinas
         }
     })
 })
 
-app.delete('/cadastro/:id', async (req, res) => {
+app.delete('/professor/:id', async (req, res) => {
     
     const id = parseInt(req.params.id);
 
-    await prisma.usuario.delete({
+    await prisma.professor.delete({
         where: {
             id: id
         }

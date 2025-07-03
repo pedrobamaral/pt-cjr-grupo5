@@ -1,6 +1,7 @@
 import { Body, Controller, Delete, Get, Param, Post, Put } from '@nestjs/common';
 import { DisciplinaDto } from './dto/disciplina.dto';
 import { DisciplinaService } from './disciplina.service';
+import { IsPublic } from 'src/auth/decorators/is-public.decorator';
 
 @Controller('disciplina')
 export class DisciplinaController {
@@ -8,6 +9,7 @@ export class DisciplinaController {
     constructor (private readonly disciplinaService: DisciplinaService) {}
 
     @Post()
+    @IsPublic()
     async create(@Body() data: DisciplinaDto){
         return this.disciplinaService.create(data);
     }
