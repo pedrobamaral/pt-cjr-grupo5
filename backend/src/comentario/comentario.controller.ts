@@ -2,12 +2,14 @@ import { Body, Controller, Delete, Get, Param, Post, Put } from '@nestjs/common'
 import { ComentarioModule } from './comentario.module';
 import { ComentarioService } from './comentario.service';
 import { ComentarioDTO } from './dto/comentario.dto';
+import { IsPublic } from 'src/auth/decorators/is-public.decorator';
 
 @Controller('comentario')
 export class ComentarioController {
 
     constructor (private readonly comentarioService: ComentarioService) {}
 
+    @IsPublic()
     @Post()
     async create(@Body() data: ComentarioDTO) {
         return this.comentarioService.create(data);
