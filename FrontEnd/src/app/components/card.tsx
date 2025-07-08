@@ -7,8 +7,8 @@ interface CardProps {
   onClick?: () => void;
 }
 
-export default function Card({ imageSrc, name, departament}: CardProps) {
-  const content = (
+export default function Card({ imageSrc, name, departament }: CardProps) {
+  return (
     <div className="w-full max-w-[220px] h-[280px] p-2 rounded-2xl shadow-md bg-[#FEFEFE] mx-auto">
       <img
         src={imageSrc}

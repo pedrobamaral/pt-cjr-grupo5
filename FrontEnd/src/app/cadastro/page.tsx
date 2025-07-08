@@ -2,45 +2,10 @@
 
 import { useFormik } from "formik";
 import { useRouter } from "next/navigation";
-import api from "../services/api";
-import { useEffect, useRef, useState } from "react";
 
 export default function Home() {
-
-    const [users, setUsers] = useState([])
-  
-    const inputName = useRef<HTMLInputElement>(null) /*useRef()*/
-  
-    async function getUsers() {
-      const usersFromApi = await api.get('/cadastro')
-  
-      setUsers(usersFromApi.data)
-    }
-
-    async function createUsers() { 
-      if (inputName.current) {
-        await api.post('/cadastro', {
-          nome: inputName.current.value
-        })
-      }
-
-      /*await api.post('/cadastro', {
-      nome: inputName.current.value
-      }*/
-
-      getUsers()
-    }
-
-    /*async function deleteUsers(id) {
-      await api.delete(`/cadastro/${id}`)
-      getUsers()
-    }*/
-  
-    useEffect(() => {
-      getUsers()
-    }, [])
-
   const router = useRouter();
+  const [error, setError] = useState("");
 
   const formik = useFormik({
     initialValues: {
@@ -50,8 +15,15 @@ export default function Home() {
       curso: "",
       departamento: "",
     },
-    onSubmit: (values) => {
-      console.log("Form values:", values);
+    onSubmit: async (values) => {
+      setError("");
+      try {
+        await cadastrar(values.nome, values.email, values.password, values.curso, values.departamento);
+        alert("Cadastro realizado com sucesso!");
+        router.push("/login"); // redireciona para login
+      } catch (err: any) {
+        setError(err?.message || "Erro ao realizar o cadastro");
+      }
     },
   });
 
@@ -76,20 +48,7 @@ export default function Home() {
 
           <form onSubmit={formik.handleSubmit}>
             <div>
-              <label htmlFor="nome">Nome: </label>
-              <br></br>
-              <input
-                id="nome"
-                type="nome"
-                name="nome"
-                //onChange={formik.handleChange}
-                //value={formik.values.nome}
-                ref={inputName}
-                placeholder="Digite seu nome"
-              />
-            </div>
-              <div>
-              <label htmlFor="email">Email: </label>
+              <label htmlFor="email">Nome: </label>
               <br></br>
               <input
                 id="email"
@@ -102,32 +61,34 @@ export default function Home() {
             </div>
 
             <div>
-              <label htmlFor="password">Senha: </label>
-              <br></br>
+              <label htmlFor="email">Email:</label>
+              <br />
               <input
-                id="password"
-                type="password"
-                name="password"
+                id="email"
+                type="email"
+                name="email"
                 onChange={formik.handleChange}
-                value={formik.values.password}
-                placeholder="Digite sua senha"
+                value={formik.values.email}
+                placeholder="Digite seu email"
               />
             </div>
-             <div>
-              <label htmlFor="password">Curso: </label>
-              <br></br>
-              <input
-                id="password"
-                type="password"
-                name="password"
-                onChange={formik.handleChange}
-                value={formik.values.password}
-                placeholder="Digite sua senha"
-              />
-            </div>
+
             <div>
-              <label htmlFor="curso">Departamento: </label>
-              <br></br>
+              <label htmlFor="password">password:</label>
+              <br />
+              <input
+                id="password"
+                type="password"
+                name="password"
+                onChange={formik.handleChange}
+                value={formik.values.password}
+                placeholder="Digite sua password"
+              />
+            </div>
+
+            <div>
+              <label htmlFor="curso">Curso:</label>
+              <br />
               <input
                 id="curso"
                 type="text"
@@ -138,11 +99,31 @@ export default function Home() {
               />
             </div>
 
+            <div>
+              <label htmlFor="departamento">Departamento:</label>
+              <br />
+              <input
+                id="departamento"
+                type="text"
+                name="departamento"
+                onChange={formik.handleChange}
+                value={formik.values.departamento}
+                placeholder="Digite seu departamento"
+              />
+            </div>
+
+            {/* Mensagem de erro */}
+            {error && (
+              <div className="text-red-500 mt-2">
+                {error}
+              </div>
+            )}
+
             <div className="buttons-wrapper">
               <button type="submit">
                 Entrar
               </button>
-              <button type="button" onClick={() => router.push("/cadastro")}> {/*onClick={createUsers}*/}
+              <button type="button" onClick={() => router.push("/cadastro")}>
                 Criar Conta
               </button>
             </div>

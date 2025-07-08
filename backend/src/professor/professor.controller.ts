@@ -8,6 +8,7 @@ export class ProfessorController {
     
     constructor (private readonly professorService: ProfessorService) {}
 
+    @IsPublic()
     @Post()
     @IsPublic()
     async create(@Body() data: ProfessorDto) {

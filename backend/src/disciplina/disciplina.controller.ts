@@ -8,6 +8,7 @@ export class DisciplinaController {
 
     constructor (private readonly disciplinaService: DisciplinaService) {}
 
+    @IsPublic()
     @Post()
     @IsPublic()
     async create(@Body() data: DisciplinaDto){

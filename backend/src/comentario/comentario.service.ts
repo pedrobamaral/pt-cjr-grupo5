@@ -1,42 +1,68 @@
 import { Injectable } from '@nestjs/common';
-import { Prisma } from '@prisma/client';
-import { PrismaService } from 'src/database/prisma.service';
 import { ComentarioDTO } from './dto/comentario.dto';
+import { PrismaService } from 'src/database/prisma.service';
 
 @Injectable()
 export class ComentarioService {
-    getById(arg0: number) {
-        throw new Error('Comentário não encontrado.');
-    }
-    delete(arg0: number) {
-        throw new Error('Comentário não encontrado.');
-    }
-    create(data: ComentarioDTO) {
-        throw new Error('Comentário não encontrado.');
-    }
-    findAll() {
-        throw new Error('Comentário não encontrado.');
-    }
-    update(arg0: number, data: ComentarioDTO) {
-        throw new Error('Comentário não encontrado.');
-    }
 
     constructor(private prisma: PrismaService) {}
 
-    async createComentario(data: Prisma.ComentarioCreateInput) {
+    async create(data: ComentarioDTO) {
+         console.log('Dados recebidos no create:', data);
+         
         const comentario = await this.prisma.comentario.create({
             data: {
-                ...data,
-            },
+                usuarioId: data.usuarioId,
+                avaliacaoId: data.avaliacaoId,
+                conteudo: data.conteudo,
+  },
         });
-        return comentario;
 
+        return comentario;
     }
 
+    async findAll() {
+        return await this.prisma.comentario.findMany();
+    }
 
+    async update(id: number, data: ComentarioDTO) {
+        const comentarioExists = await this.prisma.comentario.findUnique({
+            where: { id },
+        });
 
+        if (!comentarioExists) {
+            throw new Error("Comentário não encontrado!");
+        }
 
+        return await this.prisma.comentario.update({
+            data,
+            where: { id },
+        });
+    }
 
+    async delete(id: number) {
+        const comentarioExists = await this.prisma.comentario.findUnique({
+            where: { id },
+        });
 
+        if (!comentarioExists) {
+            throw new Error("Comentário não encontrado!");
+        }
 
+        return await this.prisma.comentario.delete({
+            where: { id },
+        });
+    }
+
+    async getById(id: number) {
+        const comentarioExists = await this.prisma.comentario.findUnique({
+            where: { id },
+        });
+
+        if (!comentarioExists) {
+            throw new Error("Comentário não encontrado!");
+        }
+
+        return comentarioExists;
+    }
 }
