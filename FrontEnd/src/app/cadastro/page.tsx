@@ -2,8 +2,10 @@
 
 import { useFormik } from "formik";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { cadastrar } from "../services/authService";
 
-export default function Home() {
+export default function CadastroPage() {
   const router = useRouter();
   const [error, setError] = useState("");
 
@@ -48,15 +50,15 @@ export default function Home() {
 
           <form onSubmit={formik.handleSubmit}>
             <div>
-              <label htmlFor="email">Nome: </label>
-              <br></br>
+              <label htmlFor="nome">Nome:</label>
+              <br />
               <input
-                id="email"
-                type="email"
-                name="email"
+                id="nome"
+                type="text"
+                name="nome"
                 onChange={formik.handleChange}
-                value={formik.values.email}
-                placeholder="Digite seu email"
+                value={formik.values.nome}
+                placeholder="Digite seu nome"
               />
             </div>
 
@@ -120,11 +122,9 @@ export default function Home() {
             )}
 
             <div className="buttons-wrapper">
-              <button type="submit">
-                Entrar
-              </button>
-              <button type="button" onClick={() => router.push("/cadastro")}>
-                Criar Conta
+              <button type="submit">Cadastrar</button>
+              <button type="button" onClick={() => router.push("/login")}>
+                Já tenho conta
               </button>
             </div>
           </form>

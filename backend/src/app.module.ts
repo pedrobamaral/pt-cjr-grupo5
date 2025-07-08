@@ -16,7 +16,7 @@ import { DisciplinaModule } from './disciplina/disciplina.module';
   imports: [ConfigModule.forRoot({
       isGlobal: true,
     }),
-    UsuarioModule, AvaliacaoModule, AuthModule],
+    UsuarioModule, AvaliacaoModule, AuthModule, ComentarioModule, ProfessorModule, DisciplinaModule],
   controllers: [AppController],
   providers: [AppService, {
     provide: APP_GUARD, 
