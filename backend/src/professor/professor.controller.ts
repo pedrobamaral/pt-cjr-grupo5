@@ -10,16 +10,19 @@ export class ProfessorController {
 
     @IsPublic()
     @Post()
+    @IsPublic()
     async create(@Body() data: ProfessorDto) {
         return this.professorService.create(data);
     }
 
     @Get()
+    @IsPublic()
     async findAll() {
         return this.professorService.findAll();
     }
     
-    @Put(":id") 
+    @Put(":id")
+    @IsPublic() 
     async update(@Param("id") id: number, @Body() data: ProfessorDto) {
         return this.professorService.update(Number(id), data);
     }
@@ -30,6 +33,7 @@ export class ProfessorController {
     }
 
     @Get(":id")
+    @IsPublic()
     async getById(@Param("id") id: number) {
         return this.professorService.getById(Number(id));
     }

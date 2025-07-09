@@ -1,14 +1,16 @@
 'use client'
-
 import { useEffect, useState } from "react"
 import { useKeenSlider } from "keen-slider/react"
 import "keen-slider/keen-slider.min.css"
 import { ChevronLeft, ChevronRight } from "lucide-react"
 
+
 import Navbar from "./components/navbar"
 import Card from "./components/card"
 import Search from "./components/search"
 import Modal from "./components/modal"
+import ModalProf from "./components/modalProf"
+import { useRouter } from "next/navigation"
 
 type AboutType = {
   id: number;
@@ -18,10 +20,15 @@ type AboutType = {
   avaliacoes: string;
 }
 
+
 export default function Page() {
   const [professores, setProfessores] = useState<AboutType[]>([])
+  const [isLoggedIn, setIsLoggedIn] = useState(true)
+  const [showModal, setShowModal] = useState(false)
   const [isModalOpen, setIsModalOpen] = useState(false) 
   const [selectedProfessor, setSelectedProfessor] = useState<AboutType | null>(null)
+  const router = useRouter()
+
   const [sliderRef, instanceRef] = useKeenSlider({
     loop: false,
     slides: {
@@ -42,10 +49,15 @@ export default function Page() {
   })
 
   useEffect(() => {
+    const token = localStorage.getItem("token")
+    // setIsLoggedIn(!!token)
+  }, [])
+
+  useEffect(() => {
     async function fetchProfessores() {
       try {
         const response = await fetch("http://localhost:3001/professor")
-        if (!response.ok) throw new Error("Erro na resposta");
+        if (!response.ok) throw new Error("Erro na resposta")
         const data = await response.json()
         setProfessores(data)
       } catch (error) {
@@ -54,6 +66,11 @@ export default function Page() {
     }
     fetchProfessores()
   }, [])
+
+  function paginaProfessor(id: number){
+    localStorage.setItem('profID', id.toString())
+    router.push('/professor')
+  }
 
   // Função para abrir o modal com os dados do professor
   const handleOpenModal = (professor: AboutType) => {
@@ -64,13 +81,13 @@ export default function Page() {
   // Função para fechar o modal
   const handleCloseModal = () => {
     setIsModalOpen(false)
-    setSelectedProfessor(null) // Limpa o professor selecionado ao fechar
+    setSelectedProfessor(null)
   }
 
   return (
     <main className="pt-[120px] py-[32px] px-[64px] flex flex-col gap-8">
       <div className="fixed top-0 left-0 w-full z-50">
-        <Navbar />
+        <Navbar foto={""} />
       </div>
 
       <div className="flex flex-row items-center justify-between">
@@ -85,11 +102,10 @@ export default function Page() {
             onClick={() => handleOpenModal(prof)}
             className="cursor-pointer"
           >
-            <Card
-              name={prof.nome}
-              departament={prof.departamento}
-              imageSrc="https://i.pinimg.com/736x/05/6e/bd/056ebd21a16dde6a3f299e9443607598.jpg"
-              href="#"
+                         <Card
+                      name={prof.nome}
+                      departament={prof.departamento}
+                      imageSrc="https://i.pinimg.com/736x/05/6e/bd/056ebd21a16dde6a3f299e9443607598.jpg"
             />
           </div>
         ))}
@@ -97,6 +113,17 @@ export default function Page() {
 
       <div className="flex flex-row items-center justify-between mt-8">
         <h2 className="text-2xl font-semibold">Todos os Professores</h2>
+        {isLoggedIn && (
+          <>
+            <button
+              onClick={() => setShowModal(true)}
+              className="bg-[#4BA9D6] text-white px-4 py-2 rounded-[20px] hover:bg-[#16589A] transition"
+            >
+              Novo Professor
+            </button>
+            {showModal && <ModalProf onClose={() => setShowModal(false)} />}
+          </>
+        )}
       </div>
 
       <div className="relative px-4 mt-4">
@@ -104,15 +131,16 @@ export default function Page() {
           {professores.map((prof) => (
             <div
               key={prof.id}
-              className="keen-slider__slide cursor-pointer" 
-              onClick={() => handleOpenModal(prof)} 
+              className="keen-slider__slide cursor-pointer"
+              onClick={() => handleOpenModal(prof)}
             >
-              <Card
-                imageSrc="https://i.pinimg.com/736x/05/6e/bd/056ebd21a16dde6a3f299e9443607598.jpg"
-                name={prof.nome}
-                departament={prof.departamento}
-                href="#"
-              />
+        <Card
+  name={prof.nome}
+  departament={prof.departamento}
+  imageSrc="https://i.pinimg.com/736x/05/6e/bd/056ebd21a16dde6a3f299e9443607598.jpg"
+/>
+
+
             </div>
           ))}
         </div>
@@ -140,11 +168,9 @@ export default function Page() {
           <div>
             <h3 className="text-xl font-bold mb-2">{selectedProfessor.nome}</h3>
             <p className="text-gray-700">Departamento: {selectedProfessor.departamento}</p>
-            {/* adicionar mais detalhes aqui, como avaliações, etc. */}
             {selectedProfessor.avaliacoes && (
-                <p className="mt-2 text-gray-600">Avaliações: {selectedProfessor.avaliacoes}</p>
+              <p className="mt-2 text-gray-600">Avaliações: {selectedProfessor.avaliacoes}</p>
             )}
-            {/* Adicione outras informações do professor conforme necessário */}
           </div>
         ) : (
           <p>Nenhum professor selecionado.</p>

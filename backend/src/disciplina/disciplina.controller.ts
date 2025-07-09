@@ -10,6 +10,7 @@ export class DisciplinaController {
 
     @IsPublic()
     @Post()
+    @IsPublic()
     async create(@Body() data: DisciplinaDto){
         return this.disciplinaService.create(data);
     }

@@ -8,6 +8,7 @@ import { APP_GUARD } from '@nestjs/core';
 import { JwtAuthGuard } from './auth/guards/Jwt-Auth.guard';
 import { ConfigModule } from '@nestjs/config';
 import { ComentarioModule } from './comentario/comentario.module';
+import { ProfessorController } from './professor/professor.controller';
 import { ProfessorModule } from './professor/professor.module';
 import { DisciplinaModule } from './disciplina/disciplina.module';
 
