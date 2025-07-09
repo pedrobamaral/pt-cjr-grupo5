@@ -25,21 +25,7 @@ const mockAvaliacoes = [
 
 export default function Perfil() {
 
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-
-  // const [users, setUsers] = userState([])
-
-  // const inputName = useRef()
-
-  // async function getUsers() {
-  //   const usersFromApi = await api.get('/perfil')
-
-  //   setUsers(usersFromApi.data)
-  // }
-
-  // useEffect(() => {
-  //   getUsers()
-  // }, [])
+  const [isLoggedIn, setIsLoggedIn] = useState(true);
 
   return (
     <div className="min-h-screen">

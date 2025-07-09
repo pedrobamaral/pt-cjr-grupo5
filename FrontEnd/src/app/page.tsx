@@ -10,6 +10,7 @@ import Card from "./components/card"
 import Search from "./components/search"
 import ModalProf from "./components/modalProf"
 import { useRouter } from "next/navigation"
+import ModalAvaliacao from "./components/modalAvaliacao"
 
 type AboutType = {
   id: number;
@@ -24,6 +25,7 @@ export default function Page() {
   const [professores, setProfessores] = useState<AboutType[]>([])
   const [isLoggedIn, setIsLoggedIn] = useState(true)
   const [showModal, setShowModal] = useState(false)
+  const [showAvaliacao, setShowAvaliacao] = useState(false)
   const router = useRouter();
   
 
@@ -101,26 +103,40 @@ export default function Page() {
           </div>
         ))}
       </div>
-
-      <div className="flex flex-row items-center justify-between mt-8">
+      <div className="flex items-center justify-between mt-8">
+        {/* Título à esquerda */}
         <h2 className="text-2xl font-semibold">Todos os Professores</h2>
 
-      {isLoggedIn && (
-        <>
-          <button
-            onClick={() => setShowModal(true)}
-            className="bg-[#4BA9D6] text-white px-4 py-2 rounded-[20px] hover:bg-[#16589A] transition"
-          >
-            Novo Professor
-          </button>
+        {/* Agrupamento dos botões, alinhado à direita */}
+        {isLoggedIn && (
+          <div className="flex gap-6">
+            <button
+              onClick={() => setShowModal(true)}
+              className="bg-[#4BA9D6] text-white px-4 py-2 rounded-[20px] hover:bg-[#16589A] transition"
+            >
+              Novo Professor
+            </button>
+            {showModal && <ModalProf onClose={() => setShowModal(false)} />}
 
-          {showModal && <ModalProf onClose={() => setShowModal(false)} />}
-        </>
-      )}
-
-
+            <button
+              onClick={() => setShowAvaliacao(true)}
+              className="bg-[#4BA9D6] text-white px-4 py-2 rounded-[20px] hover:bg-[#16589A] transition"
+            >
+              Nova Publicação
+            </button>
+            {showAvaliacao && (
+              <ModalAvaliacao
+                onClose={() => setShowAvaliacao(false)}
+                onSubmit={(dados: { professor: string; disciplina: string; texto: string }) => {
+                  // TODO: handle submit logic here
+                  setShowAvaliacao(false);
+                }}
+              />
+            )}
+          </div>
+        )}
       </div>
-
+ 
       <div className="relative px-4 mt-4">
         <div ref={sliderRef} className="keen-slider">
           {professores.map((prof) => (
