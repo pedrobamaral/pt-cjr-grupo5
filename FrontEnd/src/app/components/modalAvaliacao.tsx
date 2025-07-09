@@ -32,8 +32,8 @@ export default function ModalAvaliacao({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center backdrop-blur-sm">
-      <div className="bg-[#15589A] w-full max-w-2xl mx-4 p-6 rounded-2xl shadow-lg">
-        <h2 className="text-white text-2xl font-semibold mb-6">
+      <div className="bg-white w-full max-w-2xl mx-4 p-6 rounded-2xl shadow-lg">
+        <h2 className="text-2xl font-semibold mb-6">
           Nova Publicação
         </h2>
 
@@ -45,7 +45,7 @@ export default function ModalAvaliacao({
             value={professor}
             onChange={(e) => setProfessor(e.target.value)}
             required
-            className="bg-white w-full h-12 px-4 rounded-lg border-0 focus:ring-0"
+            className="bg-white w-full h-12 px-4 rounded-lg border border-gray-300 focus:ring-0"
           />
 
           {/* Disciplina */}
@@ -55,7 +55,7 @@ export default function ModalAvaliacao({
             value={disciplina}
             onChange={(e) => setDisciplina(e.target.value)}
             required
-            className="bg-white w-full h-12 px-4 rounded-lg border-0 focus:ring-0"
+            className="bg-white w-full h-12 px-4 rounded-lg border border-gray-300 focus:ring-0"
           />
 
           {/* Texto da Avaliação */}
@@ -64,7 +64,7 @@ export default function ModalAvaliacao({
             value={texto}
             onChange={(e) => setTexto(e.target.value)}
             required
-            className="bg-white w-full h-40 px-4 py-3 rounded-lg resize-none border-0 focus:ring-0 overflow-y-auto"
+            className="bg-white w-full h-40 px-4 py-3 rounded-lg resize-none border border-gray-300 focus:ring-0 overflow-y-auto"
           />
 
           {/* Botões */}
