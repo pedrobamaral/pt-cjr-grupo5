@@ -36,18 +36,23 @@ export default function CadastroPage() {
   });
 
   return (
-    <div className="flex h-screen w-screen">
-      {/* Lado da imagem */}
-      <div className="w-1/2 flex items-center justify-center bg-[#F8F8F8]">
+    <div
+      className="relative h-screen w-screen overflow-hidden flex items-center justify-center"
+      style={{
+        background: "linear-gradient(to right, #ffffff 45%, #A0DCFF 85%, #5DB2E8 100%)",
+      }}
+    >
+      {/* Container da logo */}
+      <div className="absolute left-0 w-1/2 h-full flex items-center justify-center">
         <img
-          src="/images/logoCadastro.png"
+          src="/images/logo_main.jpeg"
           alt="Logo EduRanking"
-          className="w-[1000px] max-w-[100%] h-auto object-contain"
+          className="w-[500px] max-w-[90%] h-auto object-contain"
         />
       </div>
 
-      {/* Lado do formulário */}
-      <div className="w-1/2 flex items-center justify-center bg-[#A0DCFF]">
+      {/* Container do formulário */}
+      <div className="absolute right-0 w-1/2 h-full flex items-center justify-center">
         <div className="w-full max-w-md bg-white p-10 rounded-lg shadow-lg mx-6">
           <h2 className="text-center text-2xl font-bold text-gray-800 mb-6">
             Cadastro Usuário
@@ -97,7 +102,7 @@ export default function CadastroPage() {
 
             <button
               type="submit"
-              className="w-full py-2 px-4 bg-green-300 hover:bg-green-400 text-black font-semibold rounded mt-2"
+              className="w-full py-2 px-4 bg-[#A0DCFF] hover:bg-[#89cfff] text-black font-semibold rounded mt-2"
             >
               Criar Conta
             </button>
