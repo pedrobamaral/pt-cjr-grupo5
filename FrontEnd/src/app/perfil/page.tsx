@@ -38,7 +38,7 @@ export default function PerfilPage() {
       return;
     }
 
-    fetch(`http://localhost:3001/api/perfil/${userID}`, {
+    fetch(`http://localhost:3001/perfil/${userID}`, {
       headers: { Authorization: `Bearer ${token}` },
     })
       .then((res) => {

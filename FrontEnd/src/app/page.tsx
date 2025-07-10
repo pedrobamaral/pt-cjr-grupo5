@@ -55,7 +55,7 @@ export default function Page() {
   useEffect(() => {
     async function fetchProfessores() {
       try {
-        const response = await fetch("http://localhost:3001/api/professor")
+        const response = await fetch("http://localhost:3001/professor")
         if (!response.ok) throw new Error("Erro na resposta");
         const data = await response.json()
         setProfessores(data)
