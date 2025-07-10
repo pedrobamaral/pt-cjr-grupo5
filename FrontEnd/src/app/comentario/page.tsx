@@ -3,7 +3,7 @@
 import { useFormik } from "formik";
 import { useEffect, useState } from "react";
 import Navbar from "../components/navbar";
-import Modal from "../components/modalComentario";
+import ModalComentario from "../components/modalComentario";
 
 interface Resposta {
   id: string;
@@ -27,253 +27,269 @@ export default function ComentarioPage() {
   const [edicaoModalAberto, setEdicaoModalAberto] = useState<string | null>(null);
   const [textoEdicao, setTextoEdicao] = useState("");
   const [comentarioModalAberto, setComentarioModalAberto] = useState(false);
-  const usuarioAtual = typeof window !== "undefined" ? localStorage.getItem("usuario") : "";
+  const [carregando, setCarregando] = useState(false);
+  const [erro, setErro] = useState("");
+  const [usuarioAtual, setUsuarioAtual] = useState("");
+  const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {
-    fetch("http://localhost:3001/avaliacao")
-      .then((res) => res.json())
-      .then((data) => Array.isArray(data) && setComentarios(data))
-      .catch(console.error);
+    setIsClient(true);
+    setUsuarioAtual(localStorage.getItem("usuario") || "");
+
+    const buscarComentarios = async () => {
+      try {
+        setCarregando(true);
+        const resposta = await fetch("http://localhost:3001/avaliacao");
+        if (!resposta.ok) {
+          throw new Error(`HTTP error! status: ${resposta.status}`);
+        }
+        const dados = await resposta.json();
+        if (Array.isArray(dados)) {
+          setComentarios(dados);
+        }
+      } catch (error) {
+        console.error("Erro ao buscar comentários:", error);
+        setErro("Falha ao carregar comentários");
+      } finally {
+        setCarregando(false);
+      }
+    };
+
+    buscarComentarios();
   }, []);
 
   const formikComentario = useFormik({
-    initialValues: { autor: "", conteudo: "", professor: "" },
+    initialValues: {
+      autor: isClient ? localStorage.getItem("usuario") || "" : "",
+      conteudo: "",
+      professor: ""
+    },
     onSubmit: async (values, { resetForm }) => {
-      const res = await fetch("http://localhost:3001/avaliacao", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(values),
-      });
-      if (res.ok) {
-        const novo = await res.json();
-        setComentarios([novo, ...comentarios]);
+      try {
+        setCarregando(true);
+        const res = await fetch("http://localhost:3001/avaliacao", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(values)
+        });
+
+        if (!res.ok) {
+          const errorData = await res.json().catch(() => ({}));
+          throw new Error(errorData.message || "Falha ao publicar comentário");
+        }
+
+        const novoComentario = await res.json();
+        setComentarios(prev => [novoComentario, ...prev]);
         resetForm();
         setComentarioModalAberto(false);
+        setErro("");
+      } catch (error: any) {
+        console.error("Erro ao publicar comentário:", error);
+        setErro(error.message || "Erro ao publicar comentário. Tente novamente.");
+      } finally {
+        setCarregando(false);
       }
     },
   });
 
   const formikResposta = useFormik({
-    initialValues: { comentarioId: "", autor: "", conteudo: "" },
+    initialValues: {
+      comentarioId: "",
+      autor: isClient ? localStorage.getItem("usuario") || "" : "",
+      conteudo: ""
+    },
     onSubmit: async (values, { resetForm }) => {
-      await fetch("http://localhost:3001/avaliacao/resposta", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(values),
-      });
-      const atualizados = await fetch("http://localhost:3001/avaliacao").then((r) => r.json());
-      setComentarios(atualizados);
-      resetForm();
-      setRespostaModalAberto(null);
+      try {
+        setCarregando(true);
+        const res = await fetch("http://localhost:3001/avaliacao/resposta", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(values),
+        });
+
+        if (!res.ok) {
+          const errorData = await res.json().catch(() => ({}));
+          throw new Error(errorData.message || "Falha ao publicar resposta");
+        }
+
+        const dadosAtualizados = await fetch("http://localhost:3001/avaliacao").then(r => r.json());
+        setComentarios(dadosAtualizados);
+        resetForm();
+        setRespostaModalAberto(null);
+        setErro("");
+      } catch (error: any) {
+        console.error("Erro ao publicar resposta:", error);
+        setErro(error.message || "Erro ao publicar resposta. Tente novamente.");
+      } finally {
+        setCarregando(false);
+      }
     },
   });
 
-  async function handleExcluirComentario(id: string) {
-    await fetch(`http://localhost:3001/avaliacao/${id}`, { method: "DELETE" });
-    const atualizados = await fetch("http://localhost:3001/avaliacao").then((r) => r.json());
-    setComentarios(atualizados);
-  }
+  const handleExcluirComentario = async (id: string) => {
+    try {
+      setCarregando(true);
+      const res = await fetch(`http://localhost:3001/avaliacao/${id}`, {
+        method: "DELETE"
+      });
 
-  async function handleEditarComentario(id: string) {
-    await fetch(`http://localhost:3001/avaliacao/${id}`, {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ conteudo: textoEdicao }),
-    });
-    const atualizados = await fetch("http://localhost:3001/avaliacao").then((r) => r.json());
-    setComentarios(atualizados);
-    setEdicaoModalAberto(null);
-  }
+      if (!res.ok) {
+        const errorData = await res.json().catch(() => ({}));
+        throw new Error(errorData.message || "Falha ao excluir comentário");
+      }
 
-  function formatarData(dataString: string) {
+      const dadosAtualizados = await fetch("http://localhost:3001/avaliacao").then(r => r.json());
+      setComentarios(dadosAtualizados);
+    } catch (error: any) {
+      console.error("Erro ao excluir comentário:", error);
+      setErro(error.message || "Erro ao excluir comentário");
+    } finally {
+      setCarregando(false);
+    }
+  };
+
+  const handleEditarComentario = async (id: string) => {
+    try {
+      setCarregando(true);
+      const res = await fetch(`http://localhost:3001/avaliacao/${id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ conteudo: textoEdicao }),
+      });
+
+      if (!res.ok) {
+        const errorData = await res.json().catch(() => ({}));
+        throw new Error(errorData.message || "Falha ao editar comentário");
+      }
+
+      const dadosAtualizados = await fetch("http://localhost:3001/avaliacao").then(r => r.json());
+      setComentarios(dadosAtualizados);
+      setEdicaoModalAberto(null);
+    } catch (error: any) {
+      console.error("Erro ao editar comentário:", error);
+      setErro(error.message || "Erro ao editar comentário");
+    } finally {
+      setCarregando(false);
+    }
+  };
+
+  const formatarData = (dataString: string) => {
+    if (!dataString) return "";
+
     const data = new Date(dataString);
+    if (isNaN(data.getTime())) return "";
+
     const dia = data.getDate().toString().padStart(2, '0');
     const mes = (data.getMonth() + 1).toString().padStart(2, '0');
     const ano = data.getFullYear();
     const horas = data.getHours().toString().padStart(2, '0');
     const minutos = data.getMinutes().toString().padStart(2, '0');
-    
+
     return `${dia}/${mes}/${ano}, às ${horas}:${minutos}`;
+  };
+
+  if (!isClient) {
+    return <div className="flex justify-center items-center min-h-screen">Carregando...</div>;
   }
 
   return (
-    <main className="flex flex-col min-h-screen">
+    <main className="flex flex-col min-h-screen bg-gray-100">
       <Navbar foto="/avatar1.png" />
-      <div className="flex flex-1 bg-[#eeeeee]">
-        <div className="w-[80px] bg-[#eeeeee] flex items-start justify-center pt-6">
-          <button className="text-2xl">⬅</button>
+
+      {erro && (
+        <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mx-4 mt-4">
+          <span className="block sm:inline">{erro}</span>
         </div>
-        <div className="flex-1 bg-white px-4 py-6 overflow-y-auto">
-          <div className="flex justify-end mb-4">
-            <button
-              onClick={() => setComentarioModalAberto(true)}
-              className="bg-blue-600 text-white px-4 py-2 rounded"
-            >
-              Novo Comentário
-            </button>
-          </div>
+      )}
 
-          {comentarios.map((comentario) => (
-            <div key={comentario.id} className="bg-white p-4 rounded-xl mb-6 border border-gray-200">
-              <div className="flex items-start gap-3 mb-2">
-                <img src="/avatar1.png" alt="Avatar" className="w-10 h-10 rounded-full" />
-                <div className="flex-1">
-                  <div className="flex items-center gap-1">
-                    <p className="font-bold">{comentario.autor}</p>
-                    <span className="text-gray-500 text-sm">- {formatarData(comentario.criadoEm)} - {comentario.professor} - Surf</span>
-                  </div>
-                  <p className="text-md mt-1">{comentario.conteudo}</p>
-                  
-                  <div className="mt-2">
-                    <button
-                      onClick={() => setRespostaModalAberto(comentario.id)}
-                      className="text-sm text-gray-500"
-                    >
-                      {comentario.respostas.length} comentários
-                    </button>
-                  </div>
+      <div className="flex-1 flex flex-col px-6 py-4">
+        <div className="flex justify-between items-center mb-4">
+          <h1 className="text-xl font-semibold">Comentários</h1>
+          <button
+            onClick={() => setComentarioModalAberto(true)}
+            className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded"
+          >
+            Novo Comentário
+          </button>
+        </div>
 
-                  {/* Respostas */}
-                  {comentario.respostas.length > 0 && (
-                    <div className="mt-3 pl-4 border-l-2 border-gray-200">
-                      {comentario.respostas.map((resposta) => (
-                        <div key={resposta.id} className="mb-3">
-                          <div className="flex items-center gap-1">
-                            <p className="font-bold text-sm">{resposta.autor}</p>
-                            <span className="text-gray-500 text-xs">- {formatarData(resposta.criadoEm)}</span>
-                          </div>
-                          <p className="text-sm mt-1">{resposta.conteudo}</p>
-                        </div>
-                      ))}
+        {comentarios.map((comentario) => (
+          <div key={comentario.id} className="mb-6">
+            <div className="flex gap-3 mb-2">
+              <img src="/avatar1.png" className="w-10 h-10 rounded-full mt-1" alt="avatar" />
+              <div className="bg-[#34f4a0] rounded-3xl px-5 py-4 shadow-md w-full relative">
+                <div className="flex justify-between items-start">
+                  <p className="text-sm font-bold">
+                    {comentario.autor}
+                    <span className="text-gray-700 font-normal"> • {formatarData(comentario.criadoEm)} • {comentario.professor} • Surf</span>
+                  </p>
+                  {usuarioAtual === comentario.autor && (
+                    <div className="flex gap-2">
+                      <button onClick={() => {
+                        setEdicaoModalAberto(comentario.id);
+                        setTextoEdicao(comentario.conteudo);
+                      }}>
+                        ✏️
+                      </button>
+                      <button onClick={() => handleExcluirComentario(comentario.id)}>🗑️</button>
                     </div>
                   )}
                 </div>
-                
-                {usuarioAtual === comentario.autor && (
-                  <div className="flex gap-3 text-black">
-                    <button
-                      onClick={() => {
-                        setEdicaoModalAberto(comentario.id);
-                        setTextoEdicao(comentario.conteudo);
-                      }}
-                      className="text-gray-500 hover:text-gray-700"
-                    >
-                      ✏️
-                    </button>
-                    <button 
-                      onClick={() => handleExcluirComentario(comentario.id)}
-                      className="text-gray-500 hover:text-gray-700"
-                    >
-                      🗑️
-                    </button>
-                  </div>
-                )}
+                <p className="mt-2 text-sm">{comentario.conteudo}</p>
+                <div
+                  className="mt-3 text-sm text-black flex items-center gap-1 cursor-pointer"
+                  onClick={() => setRespostaModalAberto(comentario.id)}
+                >
+                  💬 {comentario.respostas.length} comentário{comentario.respostas.length !== 1 ? "s" : ""}
+                </div>
               </div>
-
-              {/* MODAL RESPOSTA */}
-              <Modal
-                isOpen={respostaModalAberto === comentario.id}
-                onClose={() => {
-                  setRespostaModalAberto(null);
-                  formikResposta.resetForm();
-                }}
-              >
-                <h2 className="text-xl font-bold mb-3">Responder comentário</h2>
-                <form
-                  onSubmit={async (e) => {
-                    e.preventDefault();
-                    await formikResposta.setFieldValue("comentarioId", comentario.id);
-                    await formikResposta.handleSubmit();
-                  }}
-                  className="space-y-3"
-                >
-                  <input
-                    type="text"
-                    name="autor"
-                    placeholder="Seu nome"
-                    onChange={formikResposta.handleChange}
-                    value={formikResposta.values.autor}
-                    className="border rounded w-full px-3 py-2"
-                    required
-                  />
-                  <input
-                    type="text"
-                    name="conteudo"
-                    placeholder="Sua resposta"
-                    onChange={formikResposta.handleChange}
-                    value={formikResposta.values.conteudo}
-                    className="border rounded w-full px-3 py-2"
-                    required
-                  />
-                  <button
-                    type="submit"
-                    className="bg-blue-600 text-white px-4 py-2 rounded"
-                  >
-                    Enviar resposta
-                  </button>
-                </form>
-              </Modal>
-
-              {/* MODAL EDIÇÃO */}
-              <Modal isOpen={edicaoModalAberto === comentario.id} onClose={() => setEdicaoModalAberto(null)}>
-                <h2 className="text-xl font-bold mb-3">Editar comentário</h2>
-                <textarea
-                  value={textoEdicao}
-                  onChange={(e) => setTextoEdicao(e.target.value)}
-                  className="border w-full rounded p-2"
-                  rows={4}
-                />
-                <button
-                  onClick={() => handleEditarComentario(comentario.id)}
-                  className="bg-green-600 text-white mt-3 px-4 py-2 rounded"
-                >
-                  Salvar edição
-                </button>
-              </Modal>
             </div>
-          ))}
-        </div>
-        <div className="w-[80px] bg-[#eeeeee]"></div>
+
+            {comentario.respostas.map((resposta) => (
+              <div key={resposta.id} className="flex gap-3 ml-14 mt-3">
+                <img src="/avatar2.png" className="w-8 h-8 rounded-full mt-1" alt="avatar" />
+                <div className="bg-[#34f4a0] rounded-3xl px-4 py-3 w-full shadow">
+                  <p className="text-sm font-bold">
+                    {resposta.autor}
+                    <span className="text-gray-700 font-normal"> • {formatarData(resposta.criadoEm)}</span>
+                  </p>
+                  <p className="text-sm mt-1">{resposta.conteudo}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        ))}
       </div>
 
-      {/* MODAL COMENTÁRIO */}
-      <Modal isOpen={comentarioModalAberto} onClose={() => setComentarioModalAberto(false)}>
-        <h2 className="text-xl font-bold mb-3">Novo Comentário</h2>
-        <form onSubmit={formikComentario.handleSubmit} className="space-y-3">
-          <input
-            type="text"
-            name="autor"
-            placeholder="Seu nome"
-            onChange={formikComentario.handleChange}
-            value={formikComentario.values.autor}
-            className="border rounded w-full px-3 py-2"
-            required
-          />
+      <ModalComentario
+        isOpen={comentarioModalAberto}
+        onClose={() => setComentarioModalAberto(false)}
+        title="Novo Comentário"
+      >
+        <form onSubmit={formikComentario.handleSubmit} className="space-y-4">
           <input
             type="text"
             name="professor"
-            placeholder="Nome do professor"
             onChange={formikComentario.handleChange}
             value={formikComentario.values.professor}
-            className="border rounded w-full px-3 py-2"
-            required
+            className="w-full border rounded px-3 py-2"
+            placeholder="Professor"
           />
           <textarea
             name="conteudo"
-            placeholder="Comentário"
             onChange={formikComentario.handleChange}
             value={formikComentario.values.conteudo}
-            className="border rounded w-full px-3 py-2 h-24"
-            required
+            className="w-full border rounded px-3 py-2"
+            placeholder="Seu comentário"
           />
           <button
             type="submit"
-            className="bg-blue-600 text-white px-4 py-2 rounded w-full"
+            className="bg-blue-600 text-white w-full py-2 rounded hover:bg-blue-700"
           >
-            Comentar
+            Publicar
           </button>
         </form>
-      </Modal>
+      </ModalComentario>
     </main>
   );
 }
