@@ -10,7 +10,7 @@ export default function LoginPage() {
     initialValues: { email: "", password: "" },
     onSubmit: async (values) => {
       // 1) chama o backend
-      const res = await fetch("http://localhost:3001/api/login", {
+      const res = await fetch("http://localhost:3001/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email: values.email, senha: values.password }),
