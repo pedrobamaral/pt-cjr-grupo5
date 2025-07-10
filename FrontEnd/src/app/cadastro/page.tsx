@@ -144,10 +144,7 @@ export default function CadastroPage() {
               />
             </div>
             <div className="buttons-wrapper">
-              <button type="submit">Entrar</button>
-              <button type="button" onClick={() => router.push("/cadastro")}>
-                Criar Conta
-              </button>
+              <button type="submit">Criar Conta</button>
             </div>
           </form>
         </div>

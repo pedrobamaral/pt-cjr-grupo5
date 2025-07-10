@@ -5,7 +5,8 @@ import { ProfessorController } from './professor.controller';
 
 @Module({
     providers: [ProfessorService, PrismaService],
-    controllers: [ProfessorController]
+    controllers: [ProfessorController],
+    exports: [PrismaService, PrismaService]
 })
 
 export class ProfessorModule {}

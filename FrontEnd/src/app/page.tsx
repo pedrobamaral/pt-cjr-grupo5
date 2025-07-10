@@ -8,10 +8,8 @@ import { ChevronLeft, ChevronRight } from "lucide-react"
 import Navbar from "./components/navbar"
 import Card from "./components/card"
 import Search from "./components/search"
-import Modal from "./components/modal"
 import ModalProf from "./components/modalProf"
 import { useRouter } from "next/navigation"
-import ModalAvaliacao from "./components/modalAvaliacao"
 
 type AboutType = {
   id: number;
@@ -26,13 +24,10 @@ export default function Page() {
   const [professores, setProfessores] = useState<AboutType[]>([])
   const [isLoggedIn, setIsLoggedIn] = useState(true)
   const [showModal, setShowModal] = useState(false)
-  const [isModalOpen, setIsModalOpen] = useState(false) 
-  const [selectedProfessor, setSelectedProfessor] = useState<AboutType | null>(null)
-  const [showAvaliacao, setShowAvaliacao] = useState(false)
   const router = useRouter();
   
 
-  const [sliderRef, instanceRef] = useKeenSlider({
+   const [sliderRef, instanceRef] = useKeenSlider({
     loop: false,
     slides: {
       perView: 4,
@@ -51,16 +46,17 @@ export default function Page() {
     },
   })
 
+
   useEffect(() => {
     const token = localStorage.getItem("token")
-    // setIsLoggedIn(!!token)
+    //setIsLoggedIn(!!token)
   }, [])
 
   useEffect(() => {
     async function fetchProfessores() {
       try {
         const response = await fetch("http://localhost:3001/api/professor")
-        if (!response.ok) throw new Error("Erro na resposta")
+        if (!response.ok) throw new Error("Erro na resposta");
         const data = await response.json()
         setProfessores(data)
       } catch (error) {
@@ -71,20 +67,8 @@ export default function Page() {
   }, [])
 
   function paginaProfessor(id: number){
-    localStorage.setItem('profID', id.toString())
-    router.push('/professor')
-  }
-
-  // Função para abrir o modal com os dados do professor
-  const handleOpenModal = (professor: AboutType) => {
-    setSelectedProfessor(professor)
-    setIsModalOpen(true)
-  }
-
-  // Função para fechar o modal
-  const handleCloseModal = () => {
-    setIsModalOpen(false)
-    setSelectedProfessor(null)
+    localStorage.setItem('profID', id.toString());
+    router.push('/professor');
   }
 
   return (
@@ -93,78 +77,71 @@ export default function Page() {
         <Navbar foto={""} />
       </div>
 
+
       <div className="flex flex-row items-center justify-between">
         <h2 className="text-2xl font-semibold">Novos Professores</h2>
         <Search placeHolder="Buscar professor(a)" />
       </div>
 
+
       <div className="grid grid-cols-4 gap-6">
         {professores.slice(0, 4).map((prof) => (
-          <div
-            key={prof.id}
-            onClick={() => handleOpenModal(prof)}
-            className="cursor-pointer"
-          >
-                         <Card
-                      name={prof.nome}
-                      departament={prof.departamento}
-                      imageSrc="https://i.pinimg.com/736x/05/6e/bd/056ebd21a16dde6a3f299e9443607598.jpg"
+          <div key={prof.id} className="w-full max-w-[220px] h-[280px] p-2 rounded-2xl shadow-md bg-[#FEFEFE] mx-auto" onClick={() => paginaProfessor(prof.id)}>
+            <img
+              src="https://i.pinimg.com/736x/05/6e/bd/056ebd21a16dde6a3f299e9443607598.jpg"
+              alt={prof.nome}
+              className="w-[160px] h-[160px] object-cover mx-auto rounded-2xl"
             />
+            <h2 className="w-full h-[30px] flex items-center justify-center font-semibold text-center mt-2">
+              {prof.nome}
+            </h2>
+            <p className="w-full h-[30px] flex items-center justify-center text-sm text-center">
+              {prof.departamento}
+            </p>
           </div>
         ))}
       </div>
-      <div className="flex items-center justify-between mt-8">
-        {/* Título à esquerda */}
+
+      <div className="flex flex-row items-center justify-between mt-8">
         <h2 className="text-2xl font-semibold">Todos os Professores</h2>
 
-        {/* Agrupamento dos botões, alinhado à direita */}
-        {isLoggedIn && (
-          <div className="flex gap-6">
-            <button
-              onClick={() => setShowModal(true)}
-              className="bg-[#4BA9D6] text-white px-4 py-2 rounded-[20px] hover:bg-[#16589A] transition"
-            >
-              Novo Professor
-            </button>
-            {showModal && <ModalProf onClose={() => setShowModal(false)} />}
+      {isLoggedIn && (
+        <>
+          <button
+            onClick={() => setShowModal(true)}
+            className="bg-[#4BA9D6] text-white px-4 py-2 rounded-[20px] hover:bg-[#16589A] transition"
+          >
+            Novo Professor
+          </button>
 
-            <button
-              onClick={() => setShowAvaliacao(true)}
-              className="bg-[#4BA9D6] text-white px-4 py-2 rounded-[20px] hover:bg-[#16589A] transition"
-            >
-              Nova Publicação
-            </button>
-            {showAvaliacao && (
-              <ModalAvaliacao
-                onClose={() => setShowAvaliacao(false)}
-                onSubmit={(dados: { professor: string; disciplina: string; texto: string }) => {
-                  // TODO: handle submit logic here
-                  setShowAvaliacao(false);
-                }}
-              />
-            )}
-          </div>
-        )}
+          {showModal && <ModalProf onClose={() => setShowModal(false)} />}
+        </>
+      )}
+
+
       </div>
- 
+
       <div className="relative px-4 mt-4">
         <div ref={sliderRef} className="keen-slider">
           {professores.map((prof) => (
-            <div
-              key={prof.id}
-              className="keen-slider__slide cursor-pointer"
-              onClick={() => handleOpenModal(prof)}
-            >
-        <Card
-  name={prof.nome}
-  departament={prof.departamento}
-  imageSrc="https://i.pinimg.com/736x/05/6e/bd/056ebd21a16dde6a3f299e9443607598.jpg"
-/>
-
-
-            </div>
+            <button key={prof.id} className="keen-slider__slide" onClick={() => paginaProfessor(prof.id)}>
+              <div className="w-full max-w-[220px] h-[280px] p-2 rounded-2xl shadow-md bg-[#FEFEFE] mx-auto">
+                <img
+                  src="https://i.pinimg.com/736x/05/6e/bd/056ebd21a16dde6a3f299e9443607598.jpg"
+                  alt={prof.nome}
+                  className="w-[160px] h-[160px] object-cover mx-auto rounded-2xl"
+                />
+                <h2 className="w-full h-[30px] flex items-center justify-center font-semibold text-center mt-2">
+                  {prof.nome}
+                </h2>
+                <p className="w-full h-[30px] flex items-center justify-center text-sm text-center">
+                  {prof.departamento}
+                </p>
+              </div>
+            </button>
           ))}
         </div>
+
 
         {professores.length > 4 && (
           <>
@@ -183,20 +160,6 @@ export default function Page() {
           </>
         )}
       </div>
-
-      <Modal isOpen={isModalOpen} onClose={handleCloseModal}>
-        {selectedProfessor ? (
-          <div>
-            <h3 className="text-xl font-bold mb-2">{selectedProfessor.nome}</h3>
-            <p className="text-gray-700">Departamento: {selectedProfessor.departamento}</p>
-            {selectedProfessor.avaliacoes && (
-              <p className="mt-2 text-gray-600">Avaliações: {selectedProfessor.avaliacoes}</p>
-            )}
-          </div>
-        ) : (
-          <p>Nenhum professor selecionado.</p>
-        )}
-      </Modal>
     </main>
   )
 }
