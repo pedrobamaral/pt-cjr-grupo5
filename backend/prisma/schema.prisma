@@ -49,13 +49,6 @@ model Disciplina {
   updatedAt DateTime @updatedAt
 }
 
-enum Emocao {
-  ALEGRIA
-  TRISTEZA
-  RAIVA
-  MEDO
-  NOJO
-}
 
 model Avaliacao {
   id Int @id @default(autoincrement())
@@ -63,7 +56,6 @@ model Avaliacao {
   professorID Int
   disciplinaID Int
   conteudo String
-  humor Emocao
   usuario Usuario @relation("UsuarioAvaliacoes", fields: [usuarioID], references: [id], onDelete: Cascade, onUpdate: Cascade)
   professor Professor @relation("ProfessorAvaliacoes", fields: [professorID], references: [id], onDelete: Cascade, onUpdate: Cascade)
   disciplina Disciplina @relation(fields: [disciplinaID], references: [id], onDelete: Cascade, onUpdate: Cascade)
