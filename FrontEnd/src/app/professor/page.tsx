@@ -21,7 +21,7 @@ export default function Professor() {
       return;
     } 
     try {
-      const resposta = await fetch(`http://localhost:3001/api/professor/${profID}`);
+      const resposta = await fetch(`http://localhost:3001/professor/${profID}`);
       if(resposta.ok){
         const data = await resposta.json();
         setProfessor(data);
