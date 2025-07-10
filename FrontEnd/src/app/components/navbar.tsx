@@ -1,8 +1,9 @@
 "use client";
 import Link from "next/link";
 import Image from "next/image";
-import { useState } from "react";
+import { useState, useEffect  } from "react";
 import { LogOut } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 export interface AlunoProps{
   foto: string;
@@ -13,6 +14,19 @@ export default function Navbar({
 }: AlunoProps) {
 
   const [isLoggedIn, setIsLoggedIn] = useState(true);
+  const router = useRouter();
+
+  // Verifica se o token existe no localStorage ao carregar o componente
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    setIsLoggedIn(!!token);
+  }, []);
+
+  // Logout
+  function handleLogout() {
+    localStorage.removeItem("token");
+    router.push("/login");
+  }
 
   return (
     <nav className="bg-[#4BA9D6] text-white shadow-md">
@@ -37,7 +51,7 @@ export default function Navbar({
               className="w-17 h-17 rounded-full" 
               alt="User Profile" />
             </Link>
-            <button>
+            <button onClick={handleLogout}>
               <LogOut size={30}/>
             </button>
           </div>
