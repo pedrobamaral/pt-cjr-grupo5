@@ -2,8 +2,44 @@
 
 import { useFormik } from "formik";
 import { useRouter } from "next/navigation";
+import api from "../services/api";
+import { useEffect, useRef, useState } from "react";
 
 export default function Home() {
+
+    const [users, setUsers] = useState([])
+  
+    const inputName = useRef<HTMLInputElement>(null) /*useRef()*/
+  
+    async function getUsers() {
+      const usersFromApi = await api.get('/cadastro')
+  
+      setUsers(usersFromApi.data)
+    }
+
+    async function createUsers() { 
+      if (inputName.current) {
+        await api.post('/cadastro', {
+          nome: inputName.current.value
+        })
+      }
+
+      /*await api.post('/cadastro', {
+      nome: inputName.current.value
+      }*/
+
+      getUsers()
+    }
+
+    /*async function deleteUsers(id) {
+      await api.delete(`/cadastro/${id}`)
+      getUsers()
+    }*/
+  
+    useEffect(() => {
+      getUsers()
+    }, [])
+
   const router = useRouter();
 
   const formik = useFormik({
