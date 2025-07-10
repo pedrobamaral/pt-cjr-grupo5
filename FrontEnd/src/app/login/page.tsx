@@ -1,27 +1,30 @@
 "use client";
-
 import { useFormik } from "formik";
 import { useRouter } from "next/navigation";
 import { login } from "../services/authService"; 
 import { useState } from "react";
 
-export default function Home() {
+export default function LoginPage() {
   const router = useRouter();
-  const [error, setError] = useState("");
-
   const formik = useFormik({
-    initialValues: {
-      email: "",
-      password: "",
-    },
+    initialValues: { email: "", password: "" },
     onSubmit: async (values) => {
-      setError("");
-      try {
-        await login(values.email, values.password);
-        router.push("/"); // redireciona para a página principal após login
-      } catch (err: any) {
-        setError(err);
+      // 1) chama o backend
+      const res = await fetch("http://localhost:3001/api/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: values.email, senha: values.password }),
+      });
+      if (!res.ok) {
+        alert("Credenciais inválidas");
+        return;
       }
+      const { token, usuario } = await res.json();
+      // 2) salva token e ID
+      localStorage.setItem("token", token);
+      localStorage.setItem("userID", usuario.id.toString());
+      // 3) redireciona para perfil
+      router.push("/perfil");
     },
   });
 
@@ -70,13 +73,6 @@ export default function Home() {
                 placeholder="Digite sua senha"
               />
             </div>
-
-            {/* Exibe erro, se houver */}
-            {error && (
-              <div className="text-red-500 mt-2">
-                {error}
-              </div>
-            )}
 
             <div className="buttons-wrapper">
               <button type="submit">
