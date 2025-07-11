@@ -4,6 +4,7 @@ import { useFormik } from "formik";
 import { useEffect, useState } from "react";
 import Navbar from "../components/navbar";
 import ModalComentario from "../components/modalComentario";
+import { FiEdit2, FiTrash2, FiMessageCircle } from "react-icons/fi";
 
 interface Resposta {
   id: string;
@@ -40,13 +41,10 @@ export default function ComentarioPage() {
       try {
         setCarregando(true);
         const resposta = await fetch("http://localhost:3001/avaliacao");
-        if (!resposta.ok) {
-          throw new Error(`HTTP error! status: ${resposta.status}`);
-        }
+        if (!resposta.ok) throw new Error(`HTTP error! status: ${resposta.status}`);
+
         const dados = await resposta.json();
-        if (Array.isArray(dados)) {
-          setComentarios(dados);
-        }
+        if (Array.isArray(dados)) setComentarios(dados);
       } catch (error) {
         console.error("Erro ao buscar comentários:", error);
         setErro("Falha ao carregar comentários");
@@ -73,10 +71,7 @@ export default function ComentarioPage() {
           body: JSON.stringify(values)
         });
 
-        if (!res.ok) {
-          const errorData = await res.json().catch(() => ({}));
-          throw new Error(errorData.message || "Falha ao publicar comentário");
-        }
+        if (!res.ok) throw new Error("Falha ao publicar comentário");
 
         const novoComentario = await res.json();
         setComentarios(prev => [novoComentario, ...prev]);
@@ -85,41 +80,7 @@ export default function ComentarioPage() {
         setErro("");
       } catch (error: any) {
         console.error("Erro ao publicar comentário:", error);
-        setErro(error.message || "Erro ao publicar comentário. Tente novamente.");
-      } finally {
-        setCarregando(false);
-      }
-    },
-  });
-
-  const formikResposta = useFormik({
-    initialValues: {
-      comentarioId: "",
-      autor: isClient ? localStorage.getItem("usuario") || "" : "",
-      conteudo: ""
-    },
-    onSubmit: async (values, { resetForm }) => {
-      try {
-        setCarregando(true);
-        const res = await fetch("http://localhost:3001/avaliacao/resposta", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(values),
-        });
-
-        if (!res.ok) {
-          const errorData = await res.json().catch(() => ({}));
-          throw new Error(errorData.message || "Falha ao publicar resposta");
-        }
-
-        const dadosAtualizados = await fetch("http://localhost:3001/avaliacao").then(r => r.json());
-        setComentarios(dadosAtualizados);
-        resetForm();
-        setRespostaModalAberto(null);
-        setErro("");
-      } catch (error: any) {
-        console.error("Erro ao publicar resposta:", error);
-        setErro(error.message || "Erro ao publicar resposta. Tente novamente.");
+        setErro(error.message || "Erro ao publicar comentário.");
       } finally {
         setCarregando(false);
       }
@@ -129,14 +90,9 @@ export default function ComentarioPage() {
   const handleExcluirComentario = async (id: string) => {
     try {
       setCarregando(true);
-      const res = await fetch(`http://localhost:3001/avaliacao/${id}`, {
+      await fetch(`http://localhost:3001/avaliacao/${id}`, {
         method: "DELETE"
       });
-
-      if (!res.ok) {
-        const errorData = await res.json().catch(() => ({}));
-        throw new Error(errorData.message || "Falha ao excluir comentário");
-      }
 
       const dadosAtualizados = await fetch("http://localhost:3001/avaliacao").then(r => r.json());
       setComentarios(dadosAtualizados);
@@ -148,31 +104,7 @@ export default function ComentarioPage() {
     }
   };
 
-  const handleEditarComentario = async (id: string) => {
-    try {
-      setCarregando(true);
-      const res = await fetch(`http://localhost:3001/avaliacao/${id}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ conteudo: textoEdicao }),
-      });
-
-      if (!res.ok) {
-        const errorData = await res.json().catch(() => ({}));
-        throw new Error(errorData.message || "Falha ao editar comentário");
-      }
-
-      const dadosAtualizados = await fetch("http://localhost:3001/avaliacao").then(r => r.json());
-      setComentarios(dadosAtualizados);
-      setEdicaoModalAberto(null);
-    } catch (error: any) {
-      console.error("Erro ao editar comentário:", error);
-      setErro(error.message || "Erro ao editar comentário");
-    } finally {
-      setCarregando(false);
-    }
-  };
-
+  
   const formatarData = (dataString: string) => {
     if (!dataString) return "";
 
@@ -196,9 +128,13 @@ export default function ComentarioPage() {
     <main className="flex flex-col min-h-screen bg-gray-100">
       <Navbar foto="/avatar1.png" />
 
+      <div className="px-6 mt-4">
+        <button className="text-3xl">←</button>
+      </div>
+
       {erro && (
-        <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mx-4 mt-4">
-          <span className="block sm:inline">{erro}</span>
+        <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mx-4 mt-4">
+          <span>{erro}</span>
         </div>
       )}
 
@@ -217,7 +153,7 @@ export default function ComentarioPage() {
           <div key={comentario.id} className="mb-6">
             <div className="flex gap-3 mb-2">
               <img src="/avatar1.png" className="w-10 h-10 rounded-full mt-1" alt="avatar" />
-              <div className="bg-[#34f4a0] rounded-3xl px-5 py-4 shadow-md w-full relative">
+              <div className="relative bg-[#34f4a0] rounded-3xl px-5 py-4 shadow-md w-full">
                 <div className="flex justify-between items-start">
                   <p className="text-sm font-bold">
                     {comentario.autor}
@@ -229,9 +165,11 @@ export default function ComentarioPage() {
                         setEdicaoModalAberto(comentario.id);
                         setTextoEdicao(comentario.conteudo);
                       }}>
-                        ✏️
+                        <FiEdit2 />
                       </button>
-                      <button onClick={() => handleExcluirComentario(comentario.id)}>🗑️</button>
+                      <button onClick={() => handleExcluirComentario(comentario.id)}>
+                        <FiTrash2 />
+                      </button>
                     </div>
                   )}
                 </div>
@@ -240,20 +178,23 @@ export default function ComentarioPage() {
                   className="mt-3 text-sm text-black flex items-center gap-1 cursor-pointer"
                   onClick={() => setRespostaModalAberto(comentario.id)}
                 >
-                  💬 {comentario.respostas.length} comentário{comentario.respostas.length !== 1 ? "s" : ""}
+                  <FiMessageCircle />
+                  {comentario.respostas.length} comentário{comentario.respostas.length !== 1 ? "s" : ""}
                 </div>
+                <div className="absolute left-10 -bottom-3 w-0 h-0 border-l-[10px] border-l-transparent border-r-[10px] border-r-transparent border-t-[10px] border-t-[#34f4a0]" />
               </div>
             </div>
 
             {comentario.respostas.map((resposta) => (
               <div key={resposta.id} className="flex gap-3 ml-14 mt-3">
                 <img src="/avatar2.png" className="w-8 h-8 rounded-full mt-1" alt="avatar" />
-                <div className="bg-[#34f4a0] rounded-3xl px-4 py-3 w-full shadow">
+                <div className="relative bg-[#34f4a0] rounded-3xl px-4 py-3 w-full shadow">
                   <p className="text-sm font-bold">
                     {resposta.autor}
                     <span className="text-gray-700 font-normal"> • {formatarData(resposta.criadoEm)}</span>
                   </p>
                   <p className="text-sm mt-1">{resposta.conteudo}</p>
+                  <div className="absolute left-10 -top-3 w-0 h-0 border-l-[10px] border-l-transparent border-r-[10px] border-r-transparent border-b-[10px] border-b-[#34f4a0]" />
                 </div>
               </div>
             ))}
