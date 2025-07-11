@@ -31,29 +31,46 @@ export default function ModalAvaliacao({
   // 1) carrega professores
   useEffect(() => {
     fetch("http://localhost:3001/professor")
-      .then(res => res.json())
+      .then(res => {
+        if (!res.ok) {
+          throw new Error(`HTTP error! status: ${res.status}`);
+        }
+        return res.json();
+      })
       .then(data => {
+        console.log("raw professores:", data);
         const nomes = Array.isArray(data)
           ? data.map((p: any) => p.nome)
           : data.professores?.map((p: any) => p.nome) || [];
         setProfessores(nomes);
+        console.log("professores carregados:", nomes);
       })
-      .catch(console.error);
+      .catch(error => {
+        console.error("Erro ao carregar professores:", error);
+      });
   }, []);
 
-  // 2) carrega disciplinas
+  // 2) carrega disciplinas - CORRIGIDO
   useEffect(() => {
     fetch("http://localhost:3001/disciplina")
-      .then(res => res.json())
+      .then(res => {
+        if (!res.ok) {
+          throw new Error(`HTTP error! status: ${res.status}`);
+        }
+        return res.json();
+      })
       .then(data => {
         console.log("raw disciplinas:", data);
-        const lista = Array.isArray(data)
-          ? data
-          : data.disciplinas || data.rows || [];
-        const nomes = lista.map((d: any) => d.nome);
+        // CORREÇÃO: Simplificado o processamento dos dados
+        const nomes = Array.isArray(data)
+          ? data.map((d: any) => d.nome)
+          : [];
         setDisciplinas(nomes);
+        console.log("disciplinas carregadas:", nomes);
       })
-      .catch(console.error);
+      .catch(error => {
+        console.error("Erro ao carregar disciplinas:", error);
+      });
   }, []);
 
   // 3) filtra professores
@@ -213,3 +230,4 @@ export default function ModalAvaliacao({
     </div>
   );
 }
+
