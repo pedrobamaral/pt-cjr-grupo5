@@ -54,10 +54,10 @@ export default function Navbar({ foto }: AlunoProps) {
               />
             </Link>
 
-            {/* Botão de logout */}
+            {/* Botão de logout com cursor-pointer */}
             <button
               onClick={handleLogout}
-              className="hover:opacity-90 transition"
+              className="cursor-pointer hover:opacity-90 transition"
             >
               <LogOut size={30} />
             </button>
