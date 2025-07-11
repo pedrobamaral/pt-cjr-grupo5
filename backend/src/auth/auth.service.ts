@@ -13,17 +13,23 @@ export class AuthService {
     private readonly jwtService: JwtService,
   ) {}
 
-  login(usuario: Usuario): UsuarioToken {
+  login(usuario: Usuario): UsuarioToken & { usuario: Omit<Usuario, 'senha'> } {
     console.log('[AuthService] Login bem-sucedido, gerando token para:', usuario.email);
+
     const payload: UsuarioPayload = {
       sub: usuario.id,
       email: usuario.email,
       nome: usuario.nome,
     };
+
     const jwtToken = this.jwtService.sign(payload);
+
+    // Remove a senha do objeto retornado
+    const { senha, ...usuarioSemSenha } = usuario;
 
     return {
       access_token: jwtToken,
+      usuario: usuarioSemSenha,
     };
   }
 
@@ -43,7 +49,7 @@ export class AuthService {
 
     console.log('[AuthService] Usuário encontrado no banco de dados:', usuario.email);
     console.log('[AuthService] Hash da senha no banco:', usuario.senha);
-    
+
     console.log('[AuthService] Comparando senha recebida com o hash do banco...');
     const isPasswordValid = await bcrypt.compare(password, usuario.senha);
 
@@ -52,8 +58,10 @@ export class AuthService {
     if (isPasswordValid) {
       console.log('[AuthService] SUCESSO: Senha é válida!');
       console.log('-------------------------------------------\n');
-      const { senha, ...usuarioWithoutSenha } = usuario;
-      return usuarioWithoutSenha;
+
+      // Retorna o usuário sem a senha
+      const { senha, ...usuarioSemSenha } = usuario;
+      return usuarioSemSenha;
     } else {
       console.error('[AuthService] ERRO: A senha é inválida!');
       console.log('-------------------------------------------\n');
