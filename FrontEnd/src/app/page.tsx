@@ -4,7 +4,6 @@ import { useKeenSlider } from "keen-slider/react"
 import "keen-slider/keen-slider.min.css"
 import { ChevronLeft, ChevronRight } from "lucide-react"
 
-
 import Navbar from "./components/navbar"
 import Card from "./components/card"
 import Search from "./components/search"
@@ -19,15 +18,13 @@ type AboutType = {
   avaliacoes: string;
 }
 
-
 export default function Page() {
   const [professores, setProfessores] = useState<AboutType[]>([])
   const [isLoggedIn, setIsLoggedIn] = useState(true)
   const [showModal, setShowModal] = useState(false)
   const router = useRouter();
-  
 
-   const [sliderRef, instanceRef] = useKeenSlider({
+  const [sliderRef, instanceRef] = useKeenSlider({
     loop: false,
     slides: {
       perView: 4,
@@ -45,7 +42,6 @@ export default function Page() {
       },
     },
   })
-
 
   useEffect(() => {
     const token = localStorage.getItem("token")
@@ -66,7 +62,7 @@ export default function Page() {
     fetchProfessores()
   }, [])
 
-  function paginaProfessor(id: number){
+  function paginaProfessor(id: number) {
     localStorage.setItem('profID', id.toString());
     router.push('/professor');
   }
@@ -77,16 +73,18 @@ export default function Page() {
         <Navbar foto={""} />
       </div>
 
-
       <div className="flex flex-row items-center justify-between">
         <h2 className="text-2xl font-semibold">Novos Professores</h2>
         <Search placeHolder="Buscar professor(a)" />
       </div>
 
-
       <div className="grid grid-cols-4 gap-6">
         {professores.slice(0, 4).map((prof) => (
-          <div key={prof.id} className="w-full max-w-[220px] h-[280px] p-2 rounded-2xl shadow-md bg-[#FEFEFE] mx-auto" onClick={() => paginaProfessor(prof.id)}>
+          <div
+            key={prof.id}
+            className="w-full max-w-[220px] h-[280px] p-2 rounded-2xl shadow-md bg-[#FEFEFE] mx-auto cursor-pointer hover:shadow-lg hover:scale-105 transition transform duration-200"
+            onClick={() => paginaProfessor(prof.id)}
+          >
             <img
               src="https://i.pinimg.com/736x/05/6e/bd/056ebd21a16dde6a3f299e9443607598.jpg"
               alt={prof.nome}
@@ -105,27 +103,29 @@ export default function Page() {
       <div className="flex flex-row items-center justify-between mt-8">
         <h2 className="text-2xl font-semibold">Todos os Professores</h2>
 
-      {isLoggedIn && (
-        <>
-          <button
-            onClick={() => setShowModal(true)}
-            className="bg-[#4BA9D6] text-white px-4 py-2 rounded-[20px] hover:bg-[#16589A] transition"
-          >
-            Novo Professor
-          </button>
+        {isLoggedIn && (
+          <>
+            <button
+              onClick={() => setShowModal(true)}
+              className="bg-[#4BA9D6] text-white px-4 py-2 rounded-[20px] hover:bg-[#16589A] transition"
+            >
+              Novo Professor
+            </button>
 
-          {showModal && <ModalProf onClose={() => setShowModal(false)} />}
-        </>
-      )}
-
-
+            {showModal && <ModalProf onClose={() => setShowModal(false)} />}
+          </>
+        )}
       </div>
 
       <div className="relative px-4 mt-4">
         <div ref={sliderRef} className="keen-slider">
           {professores.map((prof) => (
-            <button key={prof.id} className="keen-slider__slide" onClick={() => paginaProfessor(prof.id)}>
-              <div className="w-full max-w-[220px] h-[280px] p-2 rounded-2xl shadow-md bg-[#FEFEFE] mx-auto">
+            <button
+              key={prof.id}
+              className="keen-slider__slide"
+              onClick={() => paginaProfessor(prof.id)}
+            >
+              <div className="w-full max-w-[220px] h-[280px] p-2 rounded-2xl shadow-md bg-[#FEFEFE] mx-auto cursor-pointer hover:shadow-lg hover:scale-105 transition transform duration-200">
                 <img
                   src="https://i.pinimg.com/736x/05/6e/bd/056ebd21a16dde6a3f299e9443607598.jpg"
                   alt={prof.nome}
@@ -141,7 +141,6 @@ export default function Page() {
             </button>
           ))}
         </div>
-
 
         {professores.length > 4 && (
           <>
