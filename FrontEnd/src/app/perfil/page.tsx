@@ -47,9 +47,6 @@ export default function PerfilPage() {
       })
       .then((data: Usuario) => {
         setUsuario(data);
-        // Aqui você poderia buscar também as avaliações reais do usuário:
-        // return fetch(`http://localhost:3001/perfil/${userID}/avaliacoes`, { headers: { Authorization: `Bearer ${token}` } })
-        // Ou, enquanto não vem do backend, usar dados mock:
         const mock: Avaliacao[] = [
           {
             studentName: "João Silva",
