@@ -35,14 +35,14 @@ export default function ComentarioPage() {
 
   useEffect(() => {
     setIsClient(true);
-    setUsuarioAtual(localStorage.getItem("usuario") || "");
+    const usuario = localStorage.getItem("usuario");
+    setUsuarioAtual(usuario || "");
 
     const buscarComentarios = async () => {
       try {
         setCarregando(true);
         const resposta = await fetch("http://localhost:3001/avaliacao");
         if (!resposta.ok) throw new Error(`HTTP error! status: ${resposta.status}`);
-
         const dados = await resposta.json();
         if (Array.isArray(dados)) setComentarios(dados);
       } catch (error) {
@@ -58,22 +58,30 @@ export default function ComentarioPage() {
 
   const formikComentario = useFormik({
     initialValues: {
-      autor: isClient ? localStorage.getItem("usuario") || "" : "",
-      conteudo: "",
-      professor: ""
+      usuarioID: 1,
+      professorID: 1,
+      disciplinaID: 1,
+      conteudo: ""
     },
     onSubmit: async (values, { resetForm }) => {
       try {
         setCarregando(true);
+
         const res = await fetch("http://localhost:3001/avaliacao", {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
+          headers: {
+            "Content-Type": "application/json"
+          },
           body: JSON.stringify(values)
         });
 
-        if (!res.ok) throw new Error("Falha ao publicar comentário");
+        const resposta = await res.text();
 
-        const novoComentario = await res.json();
+        if (!res.ok) {
+          throw new Error(`Falha ao publicar comentário: ${res.status} - ${resposta}`);
+        }
+
+        const novoComentario = JSON.parse(resposta);
         setComentarios(prev => [novoComentario, ...prev]);
         resetForm();
         setComentarioModalAberto(false);
@@ -104,10 +112,8 @@ export default function ComentarioPage() {
     }
   };
 
-  
   const formatarData = (dataString: string) => {
     if (!dataString) return "";
-
     const data = new Date(dataString);
     if (isNaN(data.getTime())) return "";
 
@@ -179,13 +185,13 @@ export default function ComentarioPage() {
                   onClick={() => setRespostaModalAberto(comentario.id)}
                 >
                   <FiMessageCircle />
-                  {comentario.respostas.length} comentário{comentario.respostas.length !== 1 ? "s" : ""}
+                  {(comentario.respostas?.length ?? 0)} comentário{(comentario.respostas?.length ?? 0) !== 1 ? "s" : ""}
                 </div>
                 <div className="absolute left-10 -bottom-3 w-0 h-0 border-l-[10px] border-l-transparent border-r-[10px] border-r-transparent border-t-[10px] border-t-[#34f4a0]" />
               </div>
             </div>
 
-            {comentario.respostas.map((resposta) => (
+            {(comentario.respostas ?? []).map((resposta) => (
               <div key={resposta.id} className="flex gap-3 ml-14 mt-3">
                 <img src="/avatar2.png" className="w-8 h-8 rounded-full mt-1" alt="avatar" />
                 <div className="relative bg-[#34f4a0] rounded-3xl px-4 py-3 w-full shadow">
@@ -208,14 +214,6 @@ export default function ComentarioPage() {
         title="Novo Comentário"
       >
         <form onSubmit={formikComentario.handleSubmit} className="space-y-4">
-          <input
-            type="text"
-            name="professor"
-            onChange={formikComentario.handleChange}
-            value={formikComentario.values.professor}
-            className="w-full border rounded px-3 py-2"
-            placeholder="Professor"
-          />
           <textarea
             name="conteudo"
             onChange={formikComentario.handleChange}

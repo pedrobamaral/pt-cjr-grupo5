@@ -14,7 +14,8 @@ export class AvaliacaoController {
     async create(@Body() data: AvaliacaoDto) {
         return this.avaliacaoService.create(data);
         }
-     
+    
+    @IsPublic()
     @Get()
         async findAll(){
             return this.avaliacaoService.findAll();

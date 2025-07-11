@@ -7,13 +7,23 @@ export class AvaliacaoService {
 
     constructor (private prisma : PrismaService) {}
     
-    async create (data: AvaliacaoDto) {
-        const avaliacao = await this.prisma.avaliacao.create({
-            data
-        });
-        
-        return avaliacao;
-    }
+async create(data: AvaliacaoDto) {
+  try {
+    const avaliacao = await this.prisma.avaliacao.create({
+      data: {
+        conteudo: data.conteudo,
+        usuario: { connect: { id: data.usuarioID } },
+        professor: { connect: { id: data.professorID } },
+        disciplina: { connect: { id: data.disciplinaID } },
+      },
+    });
+    return avaliacao;
+  } catch (error) {
+    console.error("Erro ao criar avaliação:", error);
+    throw error; // relança para o controller capturar
+  }
+}
+
 
     async findAll() {
         return await this.prisma.avaliacao.findMany();
