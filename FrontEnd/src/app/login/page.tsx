@@ -1,19 +1,30 @@
 "use client";
-
 import { useFormik } from "formik";
 import { useRouter } from "next/navigation";
+import { login } from "../services/authService"; 
+import { useState } from "react";
 
-export default function Home() {
+export default function LoginPage() {
   const router = useRouter();
-
   const formik = useFormik({
-    initialValues: {
-      email: "",
-      password: "",
-    },
-    onSubmit: (values) => {
-      console.log("Form values:", values);
-      // Aqui você pode implementar a lógica de autenticação
+    initialValues: { email: "", password: "" },
+    onSubmit: async (values) => {
+      // 1) chama o backend
+      const res = await fetch("http://localhost:3001/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: values.email, senha: values.password }),
+      });
+      if (!res.ok) {
+        alert("Credenciais inválidas");
+        return;
+      }
+      const { token, usuario } = await res.json();
+      // 2) salva token e ID
+      localStorage.setItem("token", token);
+      localStorage.setItem("userID", usuario.id.toString());
+      // 3) redireciona para perfil
+      router.push("/perfil");
     },
   });
 
@@ -39,7 +50,7 @@ export default function Home() {
           <form onSubmit={formik.handleSubmit}>
             <div>
               <label htmlFor="email">Email: </label>
-              <br></br>
+              <br />
               <input
                 id="email"
                 type="email"
@@ -52,7 +63,7 @@ export default function Home() {
 
             <div>
               <label htmlFor="password">Senha: </label>
-              <br></br>
+              <br />
               <input
                 id="password"
                 type="password"

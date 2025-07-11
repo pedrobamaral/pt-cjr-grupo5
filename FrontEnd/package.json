@@ -10,13 +10,15 @@
   },
   "dependencies": {
     "@next/font": "^14.2.15",
+    "axios": "^1.10.0",
     "formik": "^2.4.6",
     "geist": "^1.4.2",
     "keen-slider": "^6.8.6",
     "lucide-react": "^0.516.0",
     "next": "^15.3.3",
     "react": "^19.1.0",
-    "react-dom": "^19.1.0"
+    "react-dom": "^19.1.0",
+    "tailwind-scrollbar": "^4.0.2"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
