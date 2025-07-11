@@ -23,8 +23,11 @@ export default function LoginPage() {
           return;
         }
 
-        const { token, usuario } = await res.json();
-        localStorage.setItem("token", token);
+        const { access_token, usuario } = await res.json();
+        console.log("usuario", usuario);
+        console.log("token", access_token);
+        console.log("userId", usuario.id.toString());
+        localStorage.setItem("token", access_token);
         localStorage.setItem("userID", usuario.id.toString());
         router.push("/perfil");
       } catch (err) {

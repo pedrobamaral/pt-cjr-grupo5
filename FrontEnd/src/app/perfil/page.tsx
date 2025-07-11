@@ -33,12 +33,14 @@ export default function PerfilPage() {
   useEffect(() => {
     const token = localStorage.getItem("token");
     const userID = localStorage.getItem("userID");
+    console.log("token", token);
+    console.log("userID", userID);
     if (!token || !userID) {
-      router.push("/login");
+      console.log("Não encontrado", token, userID);
       return;
     }
 
-    fetch(`http://localhost:3001/perfil/${userID}`, {
+    fetch(`http://localhost:3001/usuario/${userID}`, {
       headers: { Authorization: `Bearer ${token}` },
     })
       .then((res) => {
@@ -128,7 +130,7 @@ export default function PerfilPage() {
             <h2 className="text-2xl font-medium mb-4">Publicações</h2>
             <div className="flex flex-col gap-6">
               {avaliacoes.map((av, i) => (
-                <EvaluationBox key={i} {...av} foto={""} />
+                <EvaluationBox key={i} {...av} foto={"/images/logo.png"} />
               ))}
             </div>
           </section>
