@@ -27,6 +27,8 @@ model Usuario {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  Resposta Resposta[]
 }
 
 model Professor {
@@ -80,4 +82,19 @@ model Comentario {
 
   @@index([usuarioId])
   @@index([avaliacaoId])
+  Resposta Resposta[]
+}
+
+model Resposta {
+  id Int @id @default(autoincrement())
+  comentarioId Int
+  usuarioId Int
+  conteudo String
+  comentario Comentario @relation(fields: [comentarioId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  usuario Usuario @relation(fields: [usuarioId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([comentarioId])
+  @@index([usuarioId])
 }

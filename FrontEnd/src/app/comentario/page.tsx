@@ -66,7 +66,6 @@ export default function ComentarioPage() {
     onSubmit: async (values, { resetForm }) => {
       try {
         setCarregando(true);
-
         const res = await fetch("http://localhost:3001/avaliacao", {
           method: "POST",
           headers: {
@@ -93,6 +92,40 @@ export default function ComentarioPage() {
         setCarregando(false);
       }
     },
+  });
+
+  const formikResposta = useFormik({
+    initialValues: {
+      usuarioID: 1,
+      conteudo: "",
+      avaliacaoID: ""
+    },
+    onSubmit: async (values, { resetForm }) => {
+      try {
+        setCarregando(true);
+        const res = await fetch("http://localhost:3001/resposta", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            ...values,
+            avaliacaoID: respostaModalAberto
+          })
+        });
+
+        if (!res.ok) throw new Error(`Erro ao responder comentário: ${res.status}`);
+        const dadosAtualizados = await fetch("http://localhost:3001/avaliacao").then(r => r.json());
+        setComentarios(dadosAtualizados);
+        setRespostaModalAberto(null);
+        resetForm();
+      } catch (error: any) {
+        console.error(error);
+        setErro(error.message || "Erro ao responder comentário.");
+      } finally {
+        setCarregando(false);
+      }
+    }
   });
 
   const handleExcluirComentario = async (id: string) => {
@@ -187,6 +220,35 @@ export default function ComentarioPage() {
                   <FiMessageCircle />
                   {(comentario.respostas?.length ?? 0)} comentário{(comentario.respostas?.length ?? 0) !== 1 ? "s" : ""}
                 </div>
+                {respostaModalAberto === comentario.id && (
+                  <form onSubmit={formikResposta.handleSubmit} className="mt-3">
+                    <textarea
+                      name="conteudo"
+                      onChange={formikResposta.handleChange}
+                      value={formikResposta.values.conteudo}
+                      className="w-full border rounded px-3 py-2 text-sm"
+                      placeholder="Digite sua resposta"
+                    />
+                    <div className="flex justify-end mt-2 gap-2">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          formikResposta.resetForm();
+                          setRespostaModalAberto(null);
+                        }}
+                        className="text-sm text-gray-600"
+                      >
+                        Cancelar
+                      </button>
+                      <button
+                        type="submit"
+                        className="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600 text-sm"
+                      >
+                        Responder
+                      </button>
+                    </div>
+                  </form>
+                )}
                 <div className="absolute left-10 -bottom-3 w-0 h-0 border-l-[10px] border-l-transparent border-r-[10px] border-r-transparent border-t-[10px] border-t-[#34f4a0]" />
               </div>
             </div>
