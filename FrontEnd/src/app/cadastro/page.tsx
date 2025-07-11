@@ -20,15 +20,9 @@ export default function CadastroPage() {
     onSubmit: async (values) => {
       setError("");
       try {
-        await cadastrar(
-          values.nome,
-          values.email,
-          values.password,
-          values.curso,
-          values.departamento
-        );
+        await cadastrar(values.nome, values.email, values.password, values.curso, values.departamento);
         alert("Cadastro realizado com sucesso!");
-        router.push("/login");
+        router.push("/login"); // redireciona para login
       } catch (err: any) {
         setError(err?.message || "Erro ao realizar o cadastro");
       }
@@ -36,81 +30,123 @@ export default function CadastroPage() {
   });
 
   return (
-    <div
-      className="relative h-screen w-screen overflow-hidden flex items-center justify-center"
-      style={{
-        background: "linear-gradient(to right, #ffffff 45%, #A0DCFF 85%, #5DB2E8 100%)",
-      }}
-    >
-      {/* Container da logo */}
-      <div className="absolute left-0 w-1/2 h-full flex items-center justify-center">
+    <div className="flex h-full w-full">
+      {/* Lado da imagem */}
+      <div className="w-3/7 h-full ">
         <img
           src="/images/logo_main.jpeg"
-          alt="Logo EduRanking"
-          className="w-[500px] max-w-[90%] h-auto object-contain"
+          alt="Imagem"
+          className="object-cover w-full h-full"
         />
       </div>
 
-      {/* Container do formulário */}
-      <div className="absolute right-0 w-1/2 h-full flex items-center justify-center">
-        <div className="w-full max-w-md bg-white p-10 rounded-lg shadow-lg mx-6">
-          <h2 className="text-center text-2xl font-bold text-gray-800 mb-6">
-            Cadastro Usuário
-          </h2>
+      {/* Lado do formulário */}
+      <div
+        className="w-4/7 h-full flex justify-center items-center"
+        style={{ backgroundColor: "#FEDD7C" }}
+      >
+        <div
+          className="form-container"
+          style={{
+            borderRadius: "59px",
+            background: "#FEDD7C",
+            boxShadow: "25px 20px 50px #b3b3b3, -25px -15px 50px #ffffff",
+            padding: "2rem 2.5rem",
+          }}
+        >
+          <div className="mb-4">
+            <div className="flex items-center justify-center gap-2">
+              {/*<img
+                src="/images/logo-alegria.png"
+                alt="Logo Alegria"
+                className="w-28 h-auto"
+              /> */}
+            </div>
+            <p className="text-black text-3xl font-bold flex justify-center">
+              Cadastro
+            </p>
+          </div>
+          <form onSubmit={formik.handleSubmit}>
+            <div>
+              <label htmlFor="nome">
+                {" "}
+                <p className="text-black mb-0"> Nome: </p>{" "}
+              </label>
+              <input
+                id="nome"
+                type="text"
+                name="nome"
+                onChange={formik.handleChange}
+                value={formik.values.nome}
+                placeholder="Digite seu nome"
+                className="w-150 py-2 px-3 rounded border border-gray-800 placeholder:text-base"
+              />
+            </div>
+            <div>
+              <label htmlFor="email">
+                {" "}
+                <p className="text-black mb-2 gap-0"> Email: </p>{" "}
+              </label>
+              <input
+                id="email"
+                type="email"
+                name="email"
+                onChange={formik.handleChange}
+                value={formik.values.email}
+                placeholder="Digite seu email"
+                className="w-150 py-2 px-3 rounded border border-gray-300 placeholder:text-base"
+              />
+            </div>
+            <div>
+              <label htmlFor="password">
+                {" "}
+                <p className="text-black mt-0"> Senha: </p>{" "}
+              </label>
+              <input
+                id="password"
+                type="password"
+                name="password"
+                onChange={formik.handleChange}
+                value={formik.values.password}
+                placeholder="Digite sua senha"
+                className="w-150 py-2 px-3 rounded border border-gray-300 placeholder:text-base"
+              />
+            </div>
 
-          <form onSubmit={formik.handleSubmit} className="space-y-4">
-            <input
-              type="text"
-              name="nome"
-              placeholder="Nome"
-              onChange={formik.handleChange}
-              value={formik.values.nome}
-              className="w-full py-2 px-4 rounded border border-gray-300 placeholder:text-gray-400"
-            />
-            <input
-              type="email"
-              name="email"
-              placeholder="Email"
-              onChange={formik.handleChange}
-              value={formik.values.email}
-              className="w-full py-2 px-4 rounded border border-gray-300 placeholder:text-gray-400"
-            />
-            <input
-              type="password"
-              name="password"
-              placeholder="Senha"
-              onChange={formik.handleChange}
-              value={formik.values.password}
-              className="w-full py-2 px-4 rounded border border-gray-300 placeholder:text-gray-400"
-            />
-            <input
-              type="text"
-              name="curso"
-              placeholder="Curso"
-              onChange={formik.handleChange}
-              value={formik.values.curso}
-              className="w-full py-2 px-4 rounded border border-gray-300 placeholder:text-gray-400"
-            />
-            <input
-              type="text"
-              name="departamento"
-              placeholder="Departamento"
-              onChange={formik.handleChange}
-              value={formik.values.departamento}
-              className="w-full py-2 px-4 rounded border border-gray-300 placeholder:text-gray-400"
-            />
-
-            <button
-              type="submit"
-              className="w-full py-2 px-4 bg-[#A0DCFF] hover:bg-[#89cfff] text-black font-semibold rounded mt-2"
-            >
-              Criar Conta
-            </button>
+            <div>
+              <label htmlFor="curso">
+                {" "}
+                <p className="text-black mt-0"> Curso: </p>{" "}
+              </label>
+              <input
+                id="curso"
+                type="text"
+                name="curso"
+                onChange={formik.handleChange}
+                value={formik.values.curso}
+                placeholder="Digite seu curso"
+                className="w-150 py-2 px-3 rounded border border-gray-300 placeholder:text-base"
+              />
+            </div>
+            <div>
+              <label htmlFor="departamento">
+                {" "}
+                <p className="text-black mt-0"> Departamento: </p>{" "}
+              </label>
+              <input
+                id="departamento"
+                type="text"
+                name="departamento"
+                onChange={formik.handleChange}
+                value={formik.values.departamento}
+                placeholder="Digite seu departamento"
+                className="w-150 py-2 px-3 rounded border border-gray-300 placeholder:text-base"
+              />
+            </div>
+            <div className="buttons-wrapper">
+              <button type="submit">Criar Conta</button>
+            </div>
           </form>
-
-          {error && (
-            <p className="text-red-600 text-center mt-4">{error}</p>
-          )}
         </div>
       </div>
     </div>

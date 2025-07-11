@@ -16,21 +16,25 @@ export class DisciplinaController {
     }
 
     @Get()
+    @IsPublic()
     async findAll(){
         return this.disciplinaService.findAll();
     }
 
     @Put(":id")
+    @IsPublic()
     async update(@Param("id") id:number, @Body() data: DisciplinaDto){
         return this.disciplinaService.update(Number(id), data);
     }
 
     @Delete(":id")
+    @IsPublic()
     async delete(@Param("id") id:number){
         return this.disciplinaService.delete(Number(id));
     }
 
     @Get(":id")
+    @IsPublic()
     async getById(@Param("id") id:number){
         return this.disciplinaService.getById(Number(id));
     }

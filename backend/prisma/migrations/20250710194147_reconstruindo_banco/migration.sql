@@ -37,7 +37,6 @@ CREATE TABLE "Avaliacao" (
     "professorID" INTEGER NOT NULL,
     "disciplinaID" INTEGER NOT NULL,
     "conteudo" TEXT NOT NULL,
-    "humor" TEXT NOT NULL,
     "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" DATETIME NOT NULL,
     CONSTRAINT "Avaliacao_usuarioID_fkey" FOREIGN KEY ("usuarioID") REFERENCES "Usuario" ("id") ON DELETE CASCADE ON UPDATE CASCADE,
