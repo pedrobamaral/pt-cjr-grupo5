@@ -1,5 +1,4 @@
 import React, { useState, ChangeEvent, FormEvent } from "react"
-import axios from "axios"
 
 type ModalProfProps = {
   onClose: () => void
@@ -8,32 +7,27 @@ type ModalProfProps = {
 export default function ModalProf({ onClose }: ModalProfProps) {
   const [nome, setNome] = useState("")
   const [disciplina, setDisciplina] = useState("")
-  const [departamento, setDepartamento] = useState("")
-  const [foto, setFoto] = useState("")
+  const [foto, setFoto] = useState<File | null>(null)
 
+  const handleFotoChange = (e: ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files.length > 0) {
+      setFoto(e.target.files[0])
+    }
+  }
 
-  const handleSubmit = async (e: FormEvent) => {
+  const handleSubmit = (e: FormEvent) => {
     e.preventDefault()
 
-    if (!nome || !disciplina || !foto || !departamento) {
+    if (!nome || !disciplina) {
       alert("Preencha todos os campos obrigatórios.")
       return
     }
 
-    try {
-      await axios.post("http://localhost:3001/professor", {
-        nome, 
-        disciplina,
-        foto,
-        departamento,
-      })
+    // Aqui você pode montar o FormData e fazer uma chamada à API
+    console.log("Criando professor:", { nome, disciplina, foto })
 
-      alert("Professor criado com sucesso!")
-      onClose()
-    } catch (error) {
-    console.error("Erro ao criar professor:", error)
-    alert("Erro ao criar professor")
-    }
+    // Fechar modal depois de enviar (ou após resposta da API)
+    onClose()
   }
 
   return (
@@ -60,30 +54,19 @@ export default function ModalProf({ onClose }: ModalProfProps) {
             className="border border-gray-300 rounded px-3 py-2"
           />
 
-          <input
-            type="text"
-            placeholder="Departamento"
-            value={departamento}
-            onChange={(e) => setDepartamento(e.target.value)}
-            className="border border-gray-300 rounded px-3 py-2"
-          />
-
           <label className="block text-sm font-medium text-gray-700">URL foto do professor</label>
             <input
               type="url"
               name="imageSrc"
               placeholder="https://exemplo.com/foto.jpg"
-              value={foto}
-              onChange={(e) => setFoto(e.target.value)}
               className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring focus:border-blue-500"
             />
 
           {foto && (
             <div className="text-sm text-gray-600">
-              Foto selecionada: <span className="font-medium">{foto}</span>
+              Foto selecionada: <span className="font-medium">{foto.name}</span>
             </div>
           )}
-
 
           <div className="flex justify-end gap-2 mt-4">
             <button
