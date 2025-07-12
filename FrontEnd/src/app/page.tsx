@@ -2,11 +2,9 @@
 import { useEffect, useState } from "react"
 import { useKeenSlider } from "keen-slider/react"
 import "keen-slider/keen-slider.min.css"
-import { ChevronLeft, ChevronRight } from "lucide-react"
-
+import { ChevronLeft, ChevronRight, Search as SearchIcon } from "lucide-react"
 import ModalAvaliacao from "./components/modalAvaliacao"
 import Navbar from "./components/navbar"
-import Card from "./components/card"
 import ModalProf from "./components/modalProf"
 import { useRouter } from "next/navigation"
 
@@ -26,6 +24,7 @@ export default function Page() {
   const [ordenacao, setOrdenacao] = useState("Nome")
   const [mostrarOrdenacao, setMostrarOrdenacao] = useState(false)
   const [termoBusca, setTermoBusca] = useState("")
+  const [sugestoes, setSugestoes] = useState<AboutType[]>([])
 
   const router = useRouter()
 
@@ -83,18 +82,22 @@ export default function Page() {
   }
 
   function paginaProfessor(id: number) {
-    localStorage.setItem('profID', id.toString())
-    router.push('/professor')
+    localStorage.setItem("profID", id.toString())
+    router.push("/professor")
   }
 
   function handleSearch(e: React.KeyboardEvent<HTMLInputElement>) {
-    if (e.key === "Enter") {
-      const encontrado = professores.find((p) =>
-        p.nome.toLowerCase().includes(termoBusca.toLowerCase())
-      )
-      if (encontrado) paginaProfessor(encontrado.id)
+    if (e.key === "Enter" && sugestoes.length > 0) {
+      paginaProfessor(sugestoes[0].id)
     }
   }
+
+  useEffect(() => {
+    const resultados = professores.filter((prof) =>
+      prof.nome.toLowerCase().includes(termoBusca.toLowerCase())
+    )
+    setSugestoes(termoBusca.trim() ? resultados.slice(0, 5) : [])
+  }, [termoBusca, professores])
 
   return (
     <main className="pt-[120px] py-[32px] px-[64px] flex flex-col gap-8">
@@ -112,29 +115,22 @@ export default function Page() {
             value={termoBusca}
             onChange={(e) => setTermoBusca(e.target.value)}
             onKeyDown={handleSearch}
-            className="border rounded px-4 py-2 w-full text-sm"
+            className="pl-8 pr-4 py-2 w-full bg-[#f2f2f2] text-gray-700 rounded-full placeholder-gray-400 focus:outline-none focus:ring-0"
           />
-          {termoBusca.trim() !== "" && (
-            <ul className="absolute z-50 w-full mt-1 bg-white border rounded shadow max-h-[200px] overflow-y-auto">
-              {professores
-                .filter((p) =>
-                  p.nome.toLowerCase().includes(termoBusca.toLowerCase())
-                )
-                .map((p) => (
-                  <li
-                    key={p.id}
-                    onClick={() => paginaProfessor(p.id)}
-                    className="px-4 py-2 hover:bg-blue-100 cursor-pointer"
-                  >
-                    {p.nome}
-                  </li>
-                ))}
-              {professores.filter((p) =>
-                p.nome.toLowerCase().includes(termoBusca.toLowerCase())
-              ).length === 0 && (
-                <li className="px-4 py-2 text-sm text-gray-500">Nenhum professor encontrado</li>
-              )}
-            </ul>
+          <SearchIcon className="absolute left-2.5 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
+
+          {sugestoes.length > 0 && (
+            <div className="absolute top-full left-0 right-0 bg-white shadow-md rounded-md mt-1 z-10">
+              {sugestoes.map((prof) => (
+                <div
+                  key={prof.id}
+                  className="px-4 py-2 hover:bg-blue-100 cursor-pointer"
+                  onClick={() => paginaProfessor(prof.id)}
+                >
+                  {prof.nome}
+                </div>
+              ))}
+            </div>
           )}
         </div>
       </div>
@@ -195,7 +191,7 @@ export default function Page() {
               {['Nome', 'Matéria', 'Recentes', 'Antigas'].map(opcao => (
                 <button
                   key={opcao}
-                  onClick={() => { setOrdenacao(opcao); setMostrarOrdenacao(false); }}
+                  onClick={() => { setOrdenacao(opcao); setMostrarOrdenacao(false) }}
                   className="w-full px-4 py-2 border-b border-gray-300 hover:bg-blue-100 text-left"
                 >
                   {opcao}
@@ -203,12 +199,10 @@ export default function Page() {
               ))}
             </div>
           )}
-
-          {showModal && <ModalProf onClose={() => setShowModal(false)} />}
-          {showAvaliacao && (
-            <ModalAvaliacao onClose={() => setShowAvaliacao(false)} />
-          )}
         </div>
+
+        {showModal && <ModalProf onClose={() => setShowModal(false)} />}
+        {showAvaliacao && <ModalAvaliacao onClose={() => setShowAvaliacao(false)} />}
       </div>
 
       <div className="relative px-4 mt-4">
