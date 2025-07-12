@@ -7,7 +7,6 @@ import { ChevronLeft, ChevronRight } from "lucide-react"
 import ModalAvaliacao from "./components/modalAvaliacao"
 import Navbar from "./components/navbar"
 import Card from "./components/card"
-import Search from "./components/search"
 import ModalProf from "./components/modalProf"
 import { useRouter } from "next/navigation"
 
@@ -26,8 +25,9 @@ export default function Page() {
   const [showAvaliacao, setShowAvaliacao] = useState(false)
   const [ordenacao, setOrdenacao] = useState("Nome")
   const [mostrarOrdenacao, setMostrarOrdenacao] = useState(false)
+  const [termoBusca, setTermoBusca] = useState("")
 
-  const router = useRouter();
+  const router = useRouter()
 
   const [sliderRef, instanceRef] = useKeenSlider({
     loop: false,
@@ -57,7 +57,7 @@ export default function Page() {
     async function fetchProfessores() {
       try {
         const response = await fetch("http://localhost:3001/professor")
-        if (!response.ok) throw new Error("Erro na resposta");
+        if (!response.ok) throw new Error("Erro na resposta")
         const data = await response.json()
         setProfessores(data)
       } catch (error) {
@@ -70,21 +70,30 @@ export default function Page() {
   function ordenarProfessores(lista: AboutType[], criterio: string) {
     switch (criterio) {
       case "Nome":
-        return [...lista].sort((a, b) => a.nome.localeCompare(b.nome));
+        return [...lista].sort((a, b) => a.nome.localeCompare(b.nome))
       case "Matéria":
-        return [...lista].sort((a, b) => a.departamento.localeCompare(b.departamento));
+        return [...lista].sort((a, b) => a.departamento.localeCompare(b.departamento))
       case "Recentes":
-        return [...lista].sort((a, b) => b.id - a.id);
+        return [...lista].sort((a, b) => b.id - a.id)
       case "Antigas":
-        return [...lista].sort((a, b) => a.id - b.id);
+        return [...lista].sort((a, b) => a.id - b.id)
       default:
-        return lista;
+        return lista
     }
   }
 
   function paginaProfessor(id: number) {
-    localStorage.setItem('profID', id.toString());
-    router.push('/professor');
+    localStorage.setItem('profID', id.toString())
+    router.push('/professor')
+  }
+
+  function handleSearch(e: React.KeyboardEvent<HTMLInputElement>) {
+    if (e.key === "Enter") {
+      const encontrado = professores.find((p) =>
+        p.nome.toLowerCase().includes(termoBusca.toLowerCase())
+      )
+      if (encontrado) paginaProfessor(encontrado.id)
+    }
   }
 
   return (
@@ -93,9 +102,41 @@ export default function Page() {
         <Navbar foto={""} />
       </div>
 
-      <div className="flex flex-row items-center justify-between">
+      <div className="flex flex-row items-center justify-between relative">
         <h2 className="text-2xl font-semibold">Novos Professores</h2>
-        <Search placeHolder="Buscar professor(a)" />
+
+        <div className="relative w-[250px]">
+          <input
+            type="text"
+            placeholder="Buscar professor(a)"
+            value={termoBusca}
+            onChange={(e) => setTermoBusca(e.target.value)}
+            onKeyDown={handleSearch}
+            className="border rounded px-4 py-2 w-full text-sm"
+          />
+          {termoBusca.trim() !== "" && (
+            <ul className="absolute z-50 w-full mt-1 bg-white border rounded shadow max-h-[200px] overflow-y-auto">
+              {professores
+                .filter((p) =>
+                  p.nome.toLowerCase().includes(termoBusca.toLowerCase())
+                )
+                .map((p) => (
+                  <li
+                    key={p.id}
+                    onClick={() => paginaProfessor(p.id)}
+                    className="px-4 py-2 hover:bg-blue-100 cursor-pointer"
+                  >
+                    {p.nome}
+                  </li>
+                ))}
+              {professores.filter((p) =>
+                p.nome.toLowerCase().includes(termoBusca.toLowerCase())
+              ).length === 0 && (
+                <li className="px-4 py-2 text-sm text-gray-500">Nenhum professor encontrado</li>
+              )}
+            </ul>
+          )}
+        </div>
       </div>
 
       <div className="grid grid-cols-4 gap-6">
@@ -165,9 +206,7 @@ export default function Page() {
 
           {showModal && <ModalProf onClose={() => setShowModal(false)} />}
           {showAvaliacao && (
-            <ModalAvaliacao
-              onClose={() => setShowAvaliacao(false)}
-            />
+            <ModalAvaliacao onClose={() => setShowAvaliacao(false)} />
           )}
         </div>
       </div>
