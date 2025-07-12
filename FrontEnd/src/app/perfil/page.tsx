@@ -27,6 +27,7 @@ type Avaliacao = {
 export default function PerfilPage() {
   const [usuario, setUsuario] = useState<Usuario | null>(null);
   const [avaliacoes, setAvaliacoes] = useState<Avaliacao[]>([]);
+  const [isLoggedIn, setIsLoggedIn] = useState(true)
   const [isLoaded, setIsLoaded] = useState(false);
   const router = useRouter();
 
@@ -88,53 +89,49 @@ export default function PerfilPage() {
       <Navbar foto={""} />
 
       <main>
-        <div className="w-full max-w-4xl mx-auto px-4 pt-28 relative">
-          {/* Banner */}
-          <div className="bg-[#15589A] h-40 shadow-md"></div>
+          <div className="relative">
+            <div className="w-full max-w-4xl mx-auto px-4 relative">
+                <div className="bg-[#15589A] h-40 shadow-md"></div>
+                <div className="bg-white min-h-[calc(100vh)]">
+                    {/* Foto de perfil */}
+                    <img src="/images/logo.png" 
+                    className="absolute left-16 top-20 w-40 h-40 rounded-full" 
+                    alt="User Profile" />
+                    {/* Informações do usuário */}
+                    <div className="pl-20 pt-23">
+                        <h1 className="text-2xl font-semibold">{usuario.nome}</h1>
+                        <p className="flex text-gray-600 items-center pt-6"><Building className="mr-1"/>{usuario.departamento} — {usuario.curso}</p>
+                        <p className="flex text-gray-600 items-center pt-3"><Mail className="mr-1"/>{usuario.email}</p>
+                    </div>
+                    {/* Botões que só o usuário pode ver logado*/}
+                    {isLoggedIn && (
+                        <button className="absolute right-16 top-50 bg-green-400 text-white h-12 w-30 rounded">
+                            Editar Perfil
+                        </button>
+                     )}
+                     {isLoggedIn && (
+                        <button className="absolute right-16 top-67 bg-red-400 text-white h-12 w-30 rounded">
+                            Excluir Perfil
+                        </button>
 
-          {/* Card branco */}
-          <div className="bg-white relative pt-24 pb-12 px-8 rounded-t-xl">
-            {/* Foto */}
-            <img
-              src="/images/logo.png"
-              className="absolute left-8 top-[-4rem] w-40 h-40 rounded-full border-4 border-white"
-              alt="avatar"
-            />
+                     )}
 
-            {/* Dados do usuário */}
-            <div className="ml-52">
-              <h1 className="text-2xl font-semibold">{usuario.nome}</h1>
-              <p className="flex items-center text-gray-600 mt-2">
-                <Building className="mr-1" />
-                {usuario.departamento} — {usuario.curso}
-              </p>
-              <p className="flex items-center text-gray-600 mt-1">
-                <Mail className="mr-1" />
-                {usuario.email}
-              </p>
-            </div>
+                    {/* linha que separa as informações e publicações */}
+                    <hr className="my-6 border-[#595652]"/>
 
-            {/* Botões editar/excluir */}
-            <div className="absolute right-8 top-8 flex gap-2">
-              <button className="bg-green-400 text-white px-4 py-2 rounded-full hover:opacity-90">
-                Editar
-              </button>
-              <button className="bg-red-400 text-white px-4 py-2 rounded-full hover:opacity-90">
-                Excluir
-              </button>
+                    <h1 className="text-2xl pl-6 pb-6 font-medium">Publicações</h1>
+
+                    <div className='flex justify-center'>
+                      {/* Lista de avaliações */}
+                      <section className="flex flex-col gap-6">
+                      {avaliacoes.map((av, i) => (
+                        <EvaluationBox key={i} {...av} foto={"/images/logo.png"} />
+                      ))}
+                      </section>
+                    </div>
+                </div> 
             </div>
           </div>
-
-          {/* Publicações */}
-          <section className="mt-8">
-            <h2 className="text-2xl font-medium mb-4">Publicações</h2>
-            <div className="flex flex-col gap-6">
-              {avaliacoes.map((av, i) => (
-                <EvaluationBox key={i} {...av} foto={"/images/logo.png"} />
-              ))}
-            </div>
-          </section>
-        </div>
       </main>
     </div>
   );
