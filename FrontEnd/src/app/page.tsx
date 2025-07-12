@@ -24,6 +24,9 @@ export default function Page() {
   const [isLoggedIn, setIsLoggedIn] = useState(true)
   const [showModal, setShowModal] = useState(false)
   const [showAvaliacao, setShowAvaliacao] = useState(false)
+  const [ordenacao, setOrdenacao] = useState("Nome")
+  const [mostrarOrdenacao, setMostrarOrdenacao] = useState(false)
+
   const router = useRouter();
 
   const [sliderRef, instanceRef] = useKeenSlider({
@@ -64,6 +67,21 @@ export default function Page() {
     fetchProfessores()
   }, [])
 
+  function ordenarProfessores(lista: AboutType[], criterio: string) {
+    switch (criterio) {
+      case "Nome":
+        return [...lista].sort((a, b) => a.nome.localeCompare(b.nome));
+      case "Matéria":
+        return [...lista].sort((a, b) => a.departamento.localeCompare(b.departamento));
+      case "Recentes":
+        return [...lista].sort((a, b) => b.id - a.id);
+      case "Antigas":
+        return [...lista].sort((a, b) => a.id - b.id);
+      default:
+        return lista;
+    }
+  }
+
   function paginaProfessor(id: number) {
     localStorage.setItem('profID', id.toString());
     router.push('/professor');
@@ -103,7 +121,6 @@ export default function Page() {
       </div>
 
       <div className="flex items-center justify-between mt-8">
-        {/* Título à esquerda */}
         <h2 className="text-2xl font-semibold">Todos os Professores</h2>
         {/* Agrupamento dos botões, alinhado à direita */}
         
@@ -134,7 +151,7 @@ export default function Page() {
 
       <div className="relative px-4 mt-4">
         <div ref={sliderRef} className="keen-slider">
-          {professores.map((prof) => (
+          {ordenarProfessores(professores, ordenacao).map((prof) => (
             <button
               key={prof.id}
               className="keen-slider__slide"
