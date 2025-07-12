@@ -46,9 +46,9 @@ export default function Page() {
   })
 
   useEffect(() => {
-    const token = localStorage.getItem("token")
-    //setIsLoggedIn(!!token)
-  }, [])
+    const token = localStorage.getItem("token");
+    setIsLoggedIn(!!token);
+  }, []);
 
   useEffect(() => {
     async function fetchProfessores() {
@@ -106,6 +106,7 @@ export default function Page() {
         {/* Título à esquerda */}
         <h2 className="text-2xl font-semibold">Todos os Professores</h2>
         {/* Agrupamento dos botões, alinhado à direita */}
+        
         {isLoggedIn && (
           <div className="flex gap-6">
             <button
@@ -122,16 +123,13 @@ export default function Page() {
             >
               Nova Publicação
             </button>
-            {showAvaliacao && (
+            {showAvaliacao && 
               <ModalAvaliacao
                 onClose={() => setShowAvaliacao(false)}
-                onSubmit={(dados: { professor: string; disciplina: string; texto: string }) => {
-                  setShowAvaliacao(false);
-                }}
               />
-            )}
+            }
           </div>
-        )}
+          )}
       </div>
 
       <div className="relative px-4 mt-4">

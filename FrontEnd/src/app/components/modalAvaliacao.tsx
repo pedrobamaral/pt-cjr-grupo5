@@ -1,34 +1,48 @@
 "use client";
-
+import axios from "axios";
 import { useState, useEffect, useRef, FormEvent } from "react";
+
+// Supondo que seus objetos de professor e disciplina tenham este formato
+type Professor = {
+  id: number;
+  nome: string;
+};
+
+type Disciplina = {
+  id: number;
+  nome: string;
+};
 
 export type ModalAvaliacaoProps = {
   onClose: () => void;
-  onSubmit: (dados: {
-    professor: string;
-    disciplina: string;
-    texto: string;
-  }) => void;
 };
 
-export default function ModalAvaliacao({
-  onClose,
-  onSubmit,
-}: ModalAvaliacaoProps) {
-  const [professores, setProfessores] = useState<string[]>([]);
-  const [query, setQuery] = useState("");
-  const [filteredProfs, setFilteredProfs] = useState<string[]>([]);
-  const [showProfSug, setShowProfSug] = useState(false);
+export default function ModalAvaliacao({ onClose }: ModalAvaliacaoProps) {
+  // Estados para armazenar a lista completa de objetos (ID e nome)
+  const [professores, setProfessores] = useState<Professor[]>([]); // <<< MUDANÇA
+  const [disciplinas, setDisciplinas] = useState<Disciplina[]>([]); // <<< MUDANÇA
 
-  const [disciplinas, setDisciplinas] = useState<string[]>([]);
+  // Estados para o texto dos inputs (busca)
+  const [profQuery, setProfQuery] = useState("");
   const [discQuery, setDiscQuery] = useState("");
-  const [filteredDiscs, setFilteredDiscs] = useState<string[]>([]);
-  const [showDiscSug, setShowDiscSug] = useState(false);
 
+  // Estados para as listas filtradas do autocomplete
+  const [filteredProfs, setFilteredProfs] = useState<Professor[]>([]);
+  const [filteredDiscs, setFilteredDiscs] = useState<Disciplina[]>([]);
+
+  // Estados para controlar a visibilidade dos dropdowns
+  const [showProfSug, setShowProfSug] = useState(false);
+  const [showDiscSug, setShowDiscSug] = useState(false);
+  
+  // Estados para os dados do formulário
   const [texto, setTexto] = useState("");
+  const [usuarioID, setUsuarioID] = useState<string>(""); // <<< MUDANÇA: Renomeado para clareza
+  const [professorID, setProfessorID] = useState<number | null>(null); // <<< MUDANÇA: Armazena o ID
+  const [disciplinaID, setDisciplinaID] = useState<number | null>(null); // <<< MUDANÇA: Armazena o ID
+
   const containerRef = useRef<HTMLDivElement>(null);
 
-  // 1) carrega professores
+  // 1) Carrega professores (agora com ID e nome)
   useEffect(() => {
     fetch("http://localhost:3001/professor")
       .then(res => {
@@ -37,20 +51,17 @@ export default function ModalAvaliacao({
         }
         return res.json();
       })
-      .then(data => {
-        console.log("raw professores:", data);
-        const nomes = Array.isArray(data)
-          ? data.map((p: any) => p.nome)
-          : data.professores?.map((p: any) => p.nome) || [];
-        setProfessores(nomes);
-        console.log("professores carregados:", nomes);
+      .then((data: Professor[]) => { // <<< MUDANÇA: Tipagem forte
+        // Garante que o data é um array antes de setar
+        const profs = Array.isArray(data) ? data : (data as any).professores || [];
+        setProfessores(profs);
       })
       .catch(error => {
         console.error("Erro ao carregar professores:", error);
       });
   }, []);
 
-  // 2) carrega disciplinas - CORRIGIDO
+  // 2) Carrega disciplinas (agora com ID e nome)
   useEffect(() => {
     fetch("http://localhost:3001/disciplina")
       .then(res => {
@@ -59,37 +70,31 @@ export default function ModalAvaliacao({
         }
         return res.json();
       })
-      .then(data => {
-        console.log("raw disciplinas:", data);
-        // CORREÇÃO: Simplificado o processamento dos dados
-        const nomes = Array.isArray(data)
-          ? data.map((d: any) => d.nome)
-          : [];
-        setDisciplinas(nomes);
-        console.log("disciplinas carregadas:", nomes);
+      .then((data: Disciplina[]) => { // <<< MUDANÇA: Tipagem forte
+        setDisciplinas(Array.isArray(data) ? data : []);
       })
       .catch(error => {
         console.error("Erro ao carregar disciplinas:", error);
       });
   }, []);
 
-  // 3) filtra professores
+  // 3) Filtra professores
   useEffect(() => {
-    const q = query.trim().toLowerCase();
+    const q = profQuery.trim().toLowerCase();
     if (!q) {
       setFilteredProfs([]);
       setShowProfSug(false);
       return;
     }
-    const res = professores.filter(nome =>
-      nome.toLowerCase().includes(q)
-    );
-    setFilteredProfs(res);
-    const únicoExato = res.length === 1 && res[0].toLowerCase() === q;
-    setShowProfSug(res.length > 0 && !únicoExato);
-  }, [query, professores]);
 
-  // 4) filtra disciplinas
+    const res = professores.filter(prof => prof.nome.toLowerCase().includes(q)); // <<< MUDANÇA
+    setFilteredProfs(res);
+
+    const unicoExato = res.length === 1 && res[0].nome.toLowerCase() === q;
+    setShowProfSug(res.length > 0 && !unicoExato);
+  }, [profQuery, professores]);
+
+  // 4) Filtra disciplinas
   useEffect(() => {
     const q = discQuery.trim().toLowerCase();
     if (!q) {
@@ -97,15 +102,15 @@ export default function ModalAvaliacao({
       setShowDiscSug(false);
       return;
     }
-    const res = disciplinas.filter(nome =>
-      nome.toLowerCase().includes(q)
-    );
+
+    const res = disciplinas.filter(disc => disc.nome.toLowerCase().includes(q)); // <<< MUDANÇA
     setFilteredDiscs(res);
-    const únicoExato = res.length === 1 && res[0].toLowerCase() === q;
-    setShowDiscSug(res.length > 0 && !únicoExato);
+
+    const unicoExato = res.length === 1 && res[0].nome.toLowerCase() === q;
+    setShowDiscSug(res.length > 0 && !unicoExato);
   }, [discQuery, disciplinas]);
 
-  // 5) fecha dropdowns ao clicar fora
+  // 5) Fecha dropdowns ao clicar fora
   useEffect(() => {
     function onOutside(e: MouseEvent) {
       if (
@@ -119,22 +124,49 @@ export default function ModalAvaliacao({
     document.addEventListener("mousedown", onOutside);
     return () => document.removeEventListener("mousedown", onOutside);
   }, []);
-
-  function pickProf(nome: string) {
-    setQuery(nome);
+  
+  // <<< MUDANÇA: Funções de seleção agora guardam o ID e atualizam o texto do input
+  function pickProf(professor: Professor) {
+    setProfQuery(professor.nome); // Atualiza o texto do input
+    setProfessorID(professor.id); // Guarda o ID para o envio
     setShowProfSug(false);
   }
-  function pickDisc(nome: string) {
-    setDiscQuery(nome);
+  
+  function pickDisc(disciplina: Disciplina) {
+    setDiscQuery(disciplina.nome); // Atualiza o texto do input
+    setDisciplinaID(disciplina.id); // Guarda o ID para o envio
     setShowDiscSug(false);
   }
 
-  function handleSubmit(e: FormEvent) {
+  // <<< MUDANÇA: Lógica de envio corrigida
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    onSubmit({ professor: query, disciplina: discQuery, texto });
-    setQuery(""); setDiscQuery(""); setTexto("");
-    onClose();
-  }
+
+    // Validação corrigida para usar os IDs
+    if (!usuarioID || !professorID || !disciplinaID || !texto) {
+      alert("Preencha todos os campos obrigatórios.");
+      return;
+    }
+
+    try {
+      await axios.post("http://localhost:3001/avaliacao", {
+        usuarioID: Number(usuarioID), // Converte para número, caso seja string
+        professorID,
+        disciplinaID,
+        conteudo: texto,
+      });
+
+      alert("Avaliação criada com sucesso!");
+      onClose();
+    } catch (err: any) {
+      console.error("Erro ao criar avaliação:", err);
+      if (err.response?.data?.message) {
+        alert(err.response.data.message);
+      } else {
+        alert("Ocorreu um erro ao criar a avaliação.");
+      }
+    }
+  };
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center backdrop-blur-sm">
@@ -144,28 +176,41 @@ export default function ModalAvaliacao({
       >
         <h2 className="text-2xl font-semibold mb-6">Nova Publicação</h2>
         <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
+          <div className="relative">
+            <input
+              type="number" // <<< MUDANÇA: Ideal que seja number
+              placeholder="ID do Usuário"
+              value={usuarioID}
+              onChange={e => setUsuarioID(e.target.value)}
+              required
+              className="bg-white w-full h-12 px-4 rounded-lg border border-gray-300 focus:outline-none"
+            />
+          </div>
           {/* professor */}
           <div className="relative">
             <input
               type="text"
               placeholder="Nome do professor"
-              value={query}
-              onChange={e => setQuery(e.target.value)}
+              value={profQuery}
+              onChange={e => {
+                setProfQuery(e.target.value);
+                setProfessorID(null); // <<< MUDANÇA: Limpa o ID se o usuário digitar novamente
+              }}
               onFocus={() =>
-                query && filteredProfs.length > 0 && setShowProfSug(true)
+                profQuery && filteredProfs.length > 0 && setShowProfSug(true)
               }
               required
               className="bg-white w-full h-12 px-4 rounded-lg border border-gray-300 focus:outline-none"
             />
             {showProfSug && (
               <ul className="absolute top-full left-0 right-0 bg-white border border-gray-200 max-h-40 overflow-y-auto rounded-b-lg z-50">
-                {filteredProfs.map((nome, idx) => (
+                {filteredProfs.map(prof => ( // <<< MUDANÇA
                   <li
-                    key={idx}
-                    onClick={() => pickProf(nome)}
+                    key={prof.id} // <<< MUDANÇA: Usar ID como key
+                    onClick={() => pickProf(prof)} // <<< MUDANÇA
                     className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
                   >
-                    {nome}
+                    {prof.nome}
                   </li>
                 ))}
               </ul>
@@ -178,7 +223,10 @@ export default function ModalAvaliacao({
               type="text"
               placeholder="Disciplina"
               value={discQuery}
-              onChange={e => setDiscQuery(e.target.value)}
+              onChange={e => {
+                setDiscQuery(e.target.value);
+                setDisciplinaID(null); // <<< MUDANÇA: Limpa o ID se o usuário digitar novamente
+              }}
               onFocus={() =>
                 discQuery && filteredDiscs.length > 0 && setShowDiscSug(true)
               }
@@ -187,20 +235,19 @@ export default function ModalAvaliacao({
             />
             {showDiscSug && (
               <ul className="absolute top-full left-0 right-0 bg-white border border-gray-200 max-h-40 overflow-y-auto rounded-b-lg z-50">
-                {filteredDiscs.map((nome, idx) => (
+                {filteredDiscs.map(disc => ( // <<< MUDANÇA
                   <li
-                    key={idx}
-                    onClick={() => pickDisc(nome)}
+                    key={disc.id} // <<< MUDANÇA: Usar ID como key
+                    onClick={() => pickDisc(disc)} // <<< MUDANÇA
                     className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
                   >
-                    {nome}
+                    {disc.nome}
                   </li>
                 ))}
               </ul>
             )}
           </div>
 
-          {/* texto */}
           <textarea
             placeholder="Escreva sua avaliação..."
             value={texto}
@@ -209,7 +256,6 @@ export default function ModalAvaliacao({
             className="bg-white w-full h-40 px-4 py-3 rounded-lg border border-gray-300 focus:outline-none resize-none"
           />
 
-          {/* botões */}
           <div className="flex justify-end gap-4 mt-6">
             <button
               type="button"
@@ -230,4 +276,3 @@ export default function ModalAvaliacao({
     </div>
   );
 }
-
