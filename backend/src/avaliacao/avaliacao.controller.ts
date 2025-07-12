@@ -14,23 +14,27 @@ export class AvaliacaoController {
     async create(@Body() data: AvaliacaoDto) {
         return this.avaliacaoService.create(data);
         }
-     
+    
     @Get()
+    @IsPublic()
         async findAll(){
             return this.avaliacaoService.findAll();
         }
     
     @Put(":id")
+    @IsPublic()
         async update(@Param("id") id:number, @Body() data: AvaliacaoDto){
             return this.avaliacaoService.update(Number(id), data);
         }
     
     @Delete(":id")
+    @IsPublic()
         async delete(@Param("id") id:number){
             return this.avaliacaoService.delete(Number(id));
         }
     
     @Get(":id")
+    @IsPublic()
         async getById(@Param("id") id:number){
             return this.avaliacaoService.getById(Number(id));
         }

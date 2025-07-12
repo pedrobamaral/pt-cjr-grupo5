@@ -49,9 +49,9 @@ export default function Page() {
   })
 
   useEffect(() => {
-    const token = localStorage.getItem("token")
-    setIsLoggedIn(!!token)
-  }, [])
+    const token = localStorage.getItem("token");
+    setIsLoggedIn(!!token);
+  }, []);
 
   useEffect(() => {
     async function fetchProfessores() {
@@ -122,57 +122,31 @@ export default function Page() {
 
       <div className="flex items-center justify-between mt-8">
         <h2 className="text-2xl font-semibold">Todos os Professores</h2>
+        {/* Agrupamento dos botões, alinhado à direita */}
+        
+        {isLoggedIn && (
+          <div className="flex gap-6">
+            <button
+              onClick={() => setShowModal(true)}
+              className="bg-[#4BA9D6] text-white px-4 py-2 rounded-[20px] hover:bg-[#16589A] transition"
+            >
+              Novo Professor
+            </button>
+            {showModal && <ModalProf onClose={() => setShowModal(false)} />}
 
-        <div className="flex gap-4 items-center relative">
-          {isLoggedIn && (
-            <>
-              <button
-                onClick={() => setShowModal(true)}
-                className="bg-[#4BA9D6] text-white px-4 py-2 rounded-[20px] hover:bg-[#16589A] transition"
-              >
-                Novo Professor
-              </button>
-
-              <button
-                onClick={() => setShowAvaliacao(true)}
-                className="bg-[#4BA9D6] text-white px-4 py-2 rounded-[20px] hover:bg-[#16589A] transition"
-              >
-                Nova Publicação
-              </button>
-            </>
+            <button
+              onClick={() => setShowAvaliacao(true)}
+              className="bg-[#4BA9D6] text-white px-4 py-2 rounded-[20px] hover:bg-[#16589A] transition"
+            >
+              Nova Publicação
+            </button>
+            {showAvaliacao && 
+              <ModalAvaliacao
+                onClose={() => setShowAvaliacao(false)}
+              />
+            }
+          </div>
           )}
-
-          <button
-            onClick={() => setMostrarOrdenacao(!mostrarOrdenacao)}
-            className="bg-[#4BA9D6] text-white px-4 py-2 rounded-[20px] hover:bg-[#16589A] transition"
-          >
-            Ordenar
-          </button>
-
-          {mostrarOrdenacao && (
-            <div className="absolute top-full right-0 mt-2 w-[140px] bg-[#C2DCF2] shadow-md rounded-xl z-10">
-              {['Nome', 'Matéria', 'Recentes', 'Antigas'].map(opcao => (
-                <button
-                  key={opcao}
-                  onClick={() => { setOrdenacao(opcao); setMostrarOrdenacao(false); }}
-                  className="w-full px-4 py-2 border-b border-gray-300 hover:bg-blue-100 text-left"
-                >
-                  {opcao}
-                </button>
-              ))}
-            </div>
-          )}
-
-          {showModal && <ModalProf onClose={() => setShowModal(false)} />}
-          {showAvaliacao && (
-            <ModalAvaliacao
-              onClose={() => setShowAvaliacao(false)}
-              onSubmit={(dados: { professor: string; disciplina: string; texto: string }) => {
-                setShowAvaliacao(false);
-              }}
-            />
-          )}
-        </div>
       </div>
 
       <div className="relative px-4 mt-4">
