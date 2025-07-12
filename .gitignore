@@ -4,6 +4,7 @@ node_modules
 build
 generated/prisma
 .env
+dev.db
 
 # Logs
 logs
