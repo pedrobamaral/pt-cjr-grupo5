@@ -19,6 +19,12 @@ type AboutType = {
   foto_perfil: string;
 }
 
+type Usuario = {
+  id: number;
+  nome: string;
+  foto_perfil: string;
+}
+
 export default function Page() {
   const [professores, setProfessores] = useState<AboutType[]>([])
   const [isLoggedIn, setIsLoggedIn] = useState(false)
@@ -28,6 +34,7 @@ export default function Page() {
   const [mostrarOrdenacao, setMostrarOrdenacao] = useState(false)
   const [termoBusca, setTermoBusca] = useState("")
   const [sugestoes, setSugestoes] = useState<AboutType[]>([])
+  const [usuarioLogado, setUsuarioLogado] = useState<Usuario | null>(null)
 
   const router = useRouter()
 
@@ -52,7 +59,22 @@ export default function Page() {
 
   useEffect(() => {
     const token = localStorage.getItem("token")
+    const userID = localStorage.getItem("userID")
+    
     setIsLoggedIn(!!token)
+
+    // Buscar dados do usuário logado para a navbar
+    if (userID && token) {
+      fetch(`http://localhost:3001/usuario/${userID}`)
+        .then(res => {
+          if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
+          return res.json();
+        })
+        .then((data: Usuario) => {
+          setUsuarioLogado(data);
+        })
+        .catch(err => console.error("Erro ao buscar usuário logado:", err));
+    }
   }, [])
 
   useEffect(() => {
@@ -105,7 +127,7 @@ export default function Page() {
   return (
     <main className="pt-[120px] py-[32px] px-[64px] flex flex-col gap-8">
       <div className="fixed top-0 left-0 w-full z-50">
-        <Navbar foto={""} />
+        <Navbar foto={usuarioLogado?.foto_perfil || ""} />
       </div>
 
       <div className="flex flex-row items-center justify-between relative">
@@ -253,3 +275,4 @@ export default function Page() {
     </main>
   )
 }
+

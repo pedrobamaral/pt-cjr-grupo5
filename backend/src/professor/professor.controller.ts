@@ -26,8 +26,9 @@ export class ProfessorController {
     async update(@Param("id") id: number, @Body() data: ProfessorDto) {
         return this.professorService.update(Number(id), data);
     }
-
+    
     @Delete(":id")
+    @IsPublic()
     async delete(@Param("id") id: number) {
         return this.professorService.delete(Number(id));        
     }

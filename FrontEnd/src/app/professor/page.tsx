@@ -8,9 +8,8 @@ type Avaliacao = {
   id: number;
   conteudo: string;
   disciplina: { nome: string };
-  usuario: { nome: string };
+  usuario: { nome: string, foto_perfil: string };
   createdAt: string;
-  // adicione outros campos que você precise
 };
 
 type ProfessorFull = {
@@ -19,26 +18,50 @@ type ProfessorFull = {
   departamento: string;
   disciplinas: { nome: string };
   avaliacoes: Avaliacao[];
+  foto_perfil: string;
+};
+
+type Usuario = {
+  id: number;
+  nome: string;
+  foto_perfil: string;
 };
 
 export default function ProfessorPage() {
   const [professor, setProfessor] = useState<ProfessorFull | null>(null);
   const [avaliacoes, setAvaliacoes] = useState<Avaliacao[]>([]);
+  const [usuarioLogado, setUsuarioLogado] = useState<Usuario | null>(null);
 
   useEffect(() => {
     const profID = localStorage.getItem("profID");
-    if (!profID) return;
+    const userID = localStorage.getItem("userID");
+    
+    // Buscar dados do professor
+    if (profID) {
+      fetch(`http://localhost:3001/professor/${profID}`)
+        .then(res => {
+          if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
+          return res.json();
+        })
+        .then((data: ProfessorFull) => {
+          setProfessor(data);
+          setAvaliacoes(data.avaliacoes);
+        })
+        .catch(err => console.error("Erro ao buscar professor:", err));
+    }
 
-    fetch(`http://localhost:3001/professor/${profID}`)
-      .then(res => {
-        if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
-        return res.json();
-      })
-      .then((data: ProfessorFull) => {
-        setProfessor(data);
-        setAvaliacoes(data.avaliacoes);
-      })
-      .catch(err => console.error("Erro ao buscar professor:", err));
+    // Buscar dados do usuário logado para a navbar
+    if (userID) {
+      fetch(`http://localhost:3001/usuario/${userID}`)
+        .then(res => {
+          if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
+          return res.json();
+        })
+        .then((data: Usuario) => {
+          setUsuarioLogado(data);
+        })
+        .catch(err => console.error("Erro ao buscar usuário logado:", err));
+    }
   }, []);
 
   if (!professor) {
@@ -47,7 +70,7 @@ export default function ProfessorPage() {
    
   return(
     <div className="min-h-screen">
-        <Navbar foto={""}/>
+        <Navbar foto={usuarioLogado?.foto_perfil || ""}/>
         <main>
             <div className="relative">
                 <div className="w-full max-w-4xl mx-auto px-4 relative">
@@ -56,7 +79,7 @@ export default function ProfessorPage() {
                         
                         {/* Foto de perfil */}
                         <img 
-                          src="/images/logo.png" 
+                          src={professor.foto_perfil} 
                           className="absolute left-16 top-20 w-40 h-40 rounded-full border-white shadow-lg" 
                           alt="User Profile" 
                         />
@@ -94,7 +117,7 @@ export default function ProfessorPage() {
                                     date={new Date(av.createdAt).toLocaleDateString("pt-BR")}
                                     time={new Date(av.createdAt).toLocaleTimeString("pt-BR", {hour:"2-digit",minute:"2-digit"})}
                                     commentsCount={0} // ajuste se tiver comentários
-                                    foto="/images/logo.png"
+                                    foto={av.usuario.foto_perfil}
                                   />
                                 ))}
                               </div>
@@ -109,3 +132,4 @@ export default function ProfessorPage() {
     </div>
   );
 }
+

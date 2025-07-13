@@ -10,7 +10,7 @@ interface EvaluationBoxProps {
   teacherName: string;
   text: string;
   commentsCount: number;
-  foto: string;
+  foto?: string;
 }
 
 export default function EvaluationBox({
@@ -30,7 +30,7 @@ export default function EvaluationBox({
       {/* Header */}
       <div className="flex flex-row">
         <img
-          src={foto || "/images/logo.png"}
+          src={foto || "https://i.pinimg.com/736x/e8/d7/d0/e8d7d05f392d9c2cf0285ce928fb9f4a.jpg"}
           alt="Avatar do aluno"
           className="w-16 h-16 rounded-full object-cover"
         />
