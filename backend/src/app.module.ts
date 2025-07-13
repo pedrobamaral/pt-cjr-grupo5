@@ -11,12 +11,13 @@ import { ComentarioModule } from './comentario/comentario.module';
 import { ProfessorController } from './professor/professor.controller';
 import { ProfessorModule } from './professor/professor.module';
 import { DisciplinaModule } from './disciplina/disciplina.module';
+import { RespostaModule } from './resposta/resposta.module';
 
 @Module({
   imports: [ConfigModule.forRoot({
       isGlobal: true,
     }),
-    UsuarioModule, AvaliacaoModule, AuthModule, ComentarioModule, ProfessorModule, DisciplinaModule],
+    UsuarioModule, AvaliacaoModule, AuthModule, ComentarioModule, ProfessorModule, DisciplinaModule, RespostaModule],
   controllers: [AppController],
   providers: [AppService, {
     provide: APP_GUARD, 

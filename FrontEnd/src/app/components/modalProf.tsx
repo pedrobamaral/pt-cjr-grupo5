@@ -23,10 +23,11 @@ export default function ModalProf({ onClose }: ModalProfProps) {
     try {
       await axios.post("http://localhost:3001/professor", {
         nome, 
-        disciplina,
-        foto,
         departamento,
+        disciplinas: disciplina,
+        foto_perfil: foto,
       })
+      console.log("Enviando professor:", { nome, departamento, disciplina, foto_perfil: foto });
 
       alert("Professor criado com sucesso!")
       onClose()
@@ -59,6 +60,7 @@ export default function ModalProf({ onClose }: ModalProfProps) {
             required
             className="border border-gray-300 rounded px-3 py-2"
           />
+          
 
           <input
             type="text"

@@ -1,3 +1,4 @@
+
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/database/prisma.service';
 import { ProfessorDto } from './dto/professor.dto';
@@ -18,7 +19,8 @@ export class ProfessorService {
             data: {
                 nome: data.nome, 
                 departamento: data.departamento, 
-                disciplinaId: disciplina[0].id
+                disciplinaId: disciplina[0].id,
+                foto_perfil: data.foto_perfil ?? null
             }
         });
 
@@ -47,6 +49,7 @@ export class ProfessorService {
             throw new Error('Professor não encontrado!');
         }
 
+
         await this.prisma.professor.update({
             data: {
                 nome: data.nome,
@@ -66,6 +69,9 @@ export class ProfessorService {
             }
         });
 
+        if(!professorExists) {
+            throw new Error('Professor não encontrado!');
+        }
         if(!professorExists) {
             throw new Error('Professor não encontrado!');
         }
@@ -96,4 +102,5 @@ export class ProfessorService {
         }
         return professor;
     }
+
 }
