@@ -21,7 +21,7 @@ type AboutType = {
 
 export default function Page() {
   const [professores, setProfessores] = useState<AboutType[]>([])
-  const [isLoggedIn, setIsLoggedIn] = useState(true)
+  const [isLoggedIn, setIsLoggedIn] = useState(false)
   const [showModal, setShowModal] = useState(false)
   const [showAvaliacao, setShowAvaliacao] = useState(false)
   const [ordenacao, setOrdenacao] = useState("Nome")

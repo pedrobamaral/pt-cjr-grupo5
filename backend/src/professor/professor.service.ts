@@ -84,17 +84,23 @@ export class ProfessorService {
     }
 
     async getById(id: number) {
-        const professorExists = await this.prisma.professor.findUnique({
-            where: {
-                id,
+        const professor = await this.prisma.professor.findUnique({
+            where: { id },
+            include: {
+            disciplinas: true,       // puxa a disciplina relacionada
+            avaliacoes: {            // puxa as avaliações do professor
+                include: {
+                disciplina: true,    // dentro de Avaliacao, puxa também disciplina
+                usuario: true,       // se quiser exibir quem fez a avaliação
+                }
+            }
             }
         });
 
-        if(!professorExists) {
+        if (!professor) {
             throw new Error('Professor não encontrado!');
         }
-
-            return professorExists;
+        return professor;
     }
 
 }
