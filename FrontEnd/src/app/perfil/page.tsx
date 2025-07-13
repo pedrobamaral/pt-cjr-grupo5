@@ -1,8 +1,9 @@
-"use client";
+"use client"
 import { useEffect, useState } from "react";
-import { Mail, Building } from "lucide-react";
-import Navbar from "../components/navbar";
+import { useRouter } from "next/navigation";
+import { Building, Mail } from "lucide-react";
 import EvaluationBox from "../components/evaluationbox";
+import Navbar from "../components/navbar";
 
 interface Usuario {
   id: number;
@@ -30,130 +31,74 @@ export default function PerfilPage() {
   const [isLoaded, setIsLoaded] = useState(false);
   const [isLoadingAvaliacoes, setIsLoadingAvaliacoes] = useState(false);
   const [debugInfo, setDebugInfo] = useState<string>("");
+  const router = useRouter();
 
+  // Carrega usuário real da API
   useEffect(() => {
-    // Buscar dados do usuário do localStorage ou contexto
+    const token = localStorage.getItem("token");
     const userID = localStorage.getItem("userID");
-    
-    if (userID) {
-      const usuarioMock: Usuario = {
-        id: parseInt(userID),
-        nome: "Camilo",
-        email: "camilo@gmail.com",
-        departamento: "CJR",
-        curso: "BOPE"
-      };
-      
-      setUsuario(usuarioMock);
-      setIsLoaded(true);
-      fetchAvaliacoes(parseInt(userID));
-    } else {
-      const usuarioMock: Usuario = {
-        id: 1,
-        nome: "Camilo",
-        email: "camilo@gmail.com",
-        departamento: "CJR",
-        curso: "BOPE"
-      };
-      
-      setUsuario(usuarioMock);
-      setIsLoaded(true);
-      fetchAvaliacoes(1);
+    if (!token || !userID) {
+      router.push('/login');
+      return;
     }
+
+    fetch(`http://localhost:3001/usuario/${userID}`, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+      .then(res => {
+        if (!res.ok) throw new Error('Não autorizado');
+        return res.json();
+      })
+      .then((data: Usuario) => {
+        setUsuario(data);
+        setIsLoaded(true);
+        fetchAvaliacoes(data.id);
+      })
+      .catch(err => {
+        console.error(err);
+        router.push('/login');
+      });
   }, []);
 
-  const fetchAvaliacoes = async (usuarioId: number) => {
-    setIsLoadingAvaliacoes(true);
-    
-    try {
-      // Testar diferentes URLs possíveis
-      const possibleUrls = [
-        `http://localhost:3000/avaliacao/usuario/${usuarioId}`,
-        `http://localhost:3001/avaliacao/usuario/${usuarioId}`,
-        `http://localhost:5000/avaliacao/usuario/${usuarioId}`,
-        `http://localhost:8080/avaliacao/usuario/${usuarioId}`
-      ];
+  // src/app/…/perfil/page.tsx  (ou onde você faça o fetch)
 
-      let success = false;
-      let lastError = "";
+const fetchAvaliacoes = async (usuarioId: number) => {
+  try {
+    const res = await fetch(`http://localhost:3001/avaliacao/usuario/${usuarioId}`);
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const data = await res.json() as Array<{
+      id: number;
+      conteudo: string;
+      createdAt: string;
+      usuario:    { nome: string };
+      professor:  { nome: string };
+      disciplina: { nome: string };
+      comentarios: any[];
+    }>;
 
-      for (const url of possibleUrls) {
-        try {
-          setDebugInfo(prev => prev + `\nTentando URL: ${url}`);
-          
-          const response = await fetch(url);
-          setDebugInfo(prev => prev + `\nStatus: ${response.status}`);
-          
-          if (response.ok) {
-            const data = await response.json();
-            setDebugInfo(prev => prev + `\nDados recebidos: ${JSON.stringify(data, null, 2)}`);
-            
-            if (Array.isArray(data) && data.length > 0) {
-              setAvaliacoes(data);
-              success = true;
-              break;
-            } else {
-              setDebugInfo(prev => prev + `\nArray vazio ou não é array`);
-            }
-          } else {
-            setDebugInfo(prev => prev + `\nErro HTTP: ${response.status} - ${response.statusText}`);
-          }
-        } catch (error) {
-          lastError = error instanceof Error ? error.message : String(error);
-          setDebugInfo(prev => prev + `\nErro na URL ${url}: ${lastError}`);
-        }
-      }
+    const formatted = data.map(av => ({
+      id: av.id,
+      studentName:   av.usuario.nome,
+      teacherName:   av.professor.nome,
+      discipline:    av.disciplina.nome,
+      text:          av.conteudo,
+      date:          new Date(av.createdAt).toLocaleDateString("pt-BR"),
+      time:          new Date(av.createdAt).toLocaleTimeString("pt-BR", {
+                       hour: "2-digit", minute: "2-digit"
+                     }),
+      commentsCount: av.comentarios.length,
+    }));
 
-      if (!success) {
-        setDebugInfo(prev => prev + `\nNenhuma URL funcionou. Último erro: ${lastError}`);
-        
-        // Fallback: tentar buscar todas as avaliações e filtrar
-        try {
-          const response = await fetch('http://localhost:3000/avaliacao');
-          if (response.ok) {
-            const allAvaliacoes = await response.json();
-            setDebugInfo(prev => prev + `\nTodas as avaliações: ${JSON.stringify(allAvaliacoes, null, 2)}`);
-            
-            // Filtrar por usuário manualmente
-            const userAvaliacoes = allAvaliacoes.filter((av: any) => av.usuarioID === usuarioId);
-            setDebugInfo(prev => prev + `\nAvaliações filtradas: ${JSON.stringify(userAvaliacoes, null, 2)}`);
-            
-            if (userAvaliacoes.length > 0) {
-              // Converter para o formato esperado
-              const formattedAvaliacoes = userAvaliacoes.map((av: any) => ({
-                id: av.id,
-                studentName: "Camilo", // Nome do usuário
-                teacherName: "Professor", // Placeholder
-                discipline: "Disciplina", // Placeholder
-                text: av.conteudo,
-                date: new Date(av.createdAt).toLocaleDateString('pt-BR'),
-                time: new Date(av.createdAt).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }),
-                commentsCount: 0
-              }));
-              
-              setAvaliacoes(formattedAvaliacoes);
-              setDebugInfo(prev => prev + `\nAvaliações formatadas: ${JSON.stringify(formattedAvaliacoes, null, 2)}`);
-            }
-          }
-        } catch (fallbackError) {
-          setDebugInfo(prev => prev + `\nErro no fallback: ${fallbackError}`);
-        }
-      }
-    } catch (error) {
-      setDebugInfo(prev => prev + `\nErro geral: ${error}`);
-    } finally {
-      setIsLoadingAvaliacoes(false);
-    }
-  };
+    setAvaliacoes(formatted);
 
-  if (!isLoaded) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <p className="text-lg">Carregando perfil…</p>
-      </div>
-    );
+  } catch (err) {
+    console.error("Erro ao buscar avaliações:", err);
   }
+};
 
+
+
+  if (!isLoaded) return <p className="text-center mt-8">Carregando perfil…</p>;
   if (!usuario) return null;
 
   return (
@@ -201,6 +146,7 @@ export default function PerfilPage() {
               <hr className="my-6 border-gray-300"/>
 
               <h1 className="text-2xl pl-6 pb-6 font-medium">Publicações</h1>
+
 
               <div className='flex justify-center'>
                 {/* Lista de avaliações */}

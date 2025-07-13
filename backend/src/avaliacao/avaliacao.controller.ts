@@ -21,10 +21,10 @@ export class AvaliacaoController {
     }
 
     // Nova rota para buscar avaliações por usuário
-    @Get('usuario/:usuarioId')
-    @IsPublic()
-    async findByUsuario(@Param('usuarioId') usuarioId: number) {
-        return this.avaliacaoService.findByUsuario(Number(usuarioId));
+     @IsPublic()
+    @Get('usuario/:id')
+    findByUsuario(@Param('id') id: string) {
+        return this.avaliacaoService.findByUsuario(Number(id));
     }
     
     @Put(":id")

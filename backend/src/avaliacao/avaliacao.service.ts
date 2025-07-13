@@ -16,61 +16,27 @@ export class AvaliacaoService {
     }
 
     async findAll() {
-        return await this.prisma.avaliacao.findMany();
-    }
+    return this.prisma.avaliacao.findMany({
+      include: {
+        usuario:    { select: { id: true, nome: true } },
+        professor:  { select: { id: true, nome: true } },
+        disciplina: { select: { id: true, nome: true } },
+        comentarios: true, // se você quiser contar depois
+      },
+    });
+  }
 
-    // Novo método para buscar avaliações por usuário
-    async findByUsuario(usuarioId: number) {
-        const avaliacoes = await this.prisma.avaliacao.findMany({
-            where: {
-                usuarioID: usuarioId
-            },
-            include: {
-                usuario: {
-                    select: {
-                        nome: true
-                    }
-                },
-                professor: {
-                    select: {
-                        nome: true
-                    }
-                },
-                disciplina: {
-                    select: {
-                        nome: true
-                    }
-                },
-                comentarios: true
-            },
-            orderBy: {
-                createdAt: 'desc'
-            }
-        });
-
-        // Formatar os dados para o frontend
-        return avaliacoes.map(avaliacao => {
-            const createdAt = new Date(avaliacao.createdAt);
-            const date = createdAt.toLocaleDateString('pt-BR');
-            const time = createdAt.toLocaleTimeString('pt-BR', { 
-                hour: '2-digit', 
-                minute: '2-digit' 
-            });
-
-            return {
-                id: avaliacao.id,
-                studentName: avaliacao.usuario.nome,
-                teacherName: avaliacao.professor.nome,
-                discipline: avaliacao.disciplina.nome,
-                text: avaliacao.conteudo,
-                date: date,
-                time: time,
-                commentsCount: avaliacao.comentarios.length,
-                createdAt: avaliacao.createdAt,
-                updatedAt: avaliacao.updatedAt
-            };
-        });
-    }
+    async findByUsuario(usuarioID: number) {
+    return this.prisma.avaliacao.findMany({
+      where: { usuarioID },
+      include: {
+        usuario:    { select: { id: true, nome: true } },
+        professor:  { select: { id: true, nome: true } },
+        disciplina: { select: { id: true, nome: true } },
+        comentarios: true,
+      },
+    });
+  }
 
     async update(id: number, data: AvaliacaoDto){
         const avaliacaoExists = await this.prisma.avaliacao.findUnique({
