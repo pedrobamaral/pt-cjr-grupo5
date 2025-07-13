@@ -19,7 +19,8 @@ export class ProfessorService {
             data: {
                 nome: data.nome, 
                 departamento: data.departamento, 
-                disciplinaId: disciplina[0].id
+                disciplinaId: disciplina[0].id,
+                foto_perfil: data.foto_perfil ?? null
             }
         });
 
