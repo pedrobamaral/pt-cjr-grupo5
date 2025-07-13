@@ -10,32 +10,39 @@ export class AvaliacaoController {
 
     @IsPublic()
     @Post()
-
     async create(@Body() data: AvaliacaoDto) {
         return this.avaliacaoService.create(data);
-        }
+    }
     
     @Get()
     @IsPublic()
-        async findAll(){
-            return this.avaliacaoService.findAll();
-        }
+    async findAll(){
+        return this.avaliacaoService.findAll();
+    }
+
+    // Nova rota para buscar avaliações por usuário
+     @IsPublic()
+    @Get('usuario/:id')
+    findByUsuario(@Param('id') id: string) {
+        return this.avaliacaoService.findByUsuario(Number(id));
+    }
     
     @Put(":id")
     @IsPublic()
-        async update(@Param("id") id:number, @Body() data: AvaliacaoDto){
-            return this.avaliacaoService.update(Number(id), data);
-        }
+    async update(@Param("id") id:number, @Body() data: AvaliacaoDto){
+        return this.avaliacaoService.update(Number(id), data);
+    }
     
     @Delete(":id")
     @IsPublic()
-        async delete(@Param("id") id:number){
-            return this.avaliacaoService.delete(Number(id));
-        }
+    async delete(@Param("id") id:number){
+        return this.avaliacaoService.delete(Number(id));
+    }
     
     @Get(":id")
     @IsPublic()
-        async getById(@Param("id") id:number){
-            return this.avaliacaoService.getById(Number(id));
-        }
+    async getById(@Param("id") id:number){
+        return this.avaliacaoService.getById(Number(id));
+    }
 }
+
