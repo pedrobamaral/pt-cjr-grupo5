@@ -5,6 +5,8 @@ import "keen-slider/keen-slider.min.css"
 import { ChevronLeft, ChevronRight, Search as SearchIcon } from "lucide-react"
 import ModalAvaliacao from "./components/modalAvaliacao"
 import Navbar from "./components/navbar"
+// import Card from "./components/card"
+import Search from "./components/search"
 import ModalProf from "./components/modalProf"
 import { useRouter } from "next/navigation"
 
@@ -14,6 +16,7 @@ type AboutType = {
   departamento: string;
   disciplinaId: string;
   avaliacoes: string;
+  foto_perfil: string;
 }
 
 export default function Page() {
@@ -143,7 +146,7 @@ export default function Page() {
             onClick={() => paginaProfessor(prof.id)}
           >
             <img
-              src="https://i.pinimg.com/736x/05/6e/bd/056ebd21a16dde6a3f299e9443607598.jpg"
+              src={prof.foto_perfil || "https://i.pinimg.com/736x/e8/d7/d0/e8d7d05f392d9c2cf0285ce928fb9f4a.jpg"}
               alt={prof.nome}
               className="w-[160px] h-[160px] object-cover mx-auto rounded-2xl"
             />
@@ -215,7 +218,7 @@ export default function Page() {
             >
               <div className="w-full max-w-[220px] h-[280px] p-2 rounded-2xl shadow-md bg-[#FEFEFE] mx-auto cursor-pointer hover:shadow-lg hover:scale-105 transition transform duration-200">
                 <img
-                  src="https://i.pinimg.com/736x/05/6e/bd/056ebd21a16dde6a3f299e9443607598.jpg"
+                  src={prof.foto_perfil || "https://i.pinimg.com/736x/e8/d7/d0/e8d7d05f392d9c2cf0285ce928fb9f4a.jpg"}
                   alt={prof.nome}
                   className="w-[160px] h-[160px] object-cover mx-auto rounded-2xl"
                 />

@@ -34,6 +34,7 @@ model Usuario {
 model Professor {
   id Int @id @default(autoincrement())
   nome String
+  foto_perfil String?
   departamento String
   disciplinaId Int
   disciplinas Disciplina @relation("DisciplinaProfessor", fields: [disciplinaId], references: [id], onDelete: Cascade, onUpdate: Cascade)
