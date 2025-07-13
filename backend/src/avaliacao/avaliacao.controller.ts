@@ -10,10 +10,11 @@ export class AvaliacaoController {
 
     @IsPublic()
     @Post()
+
     async create(@Body() data: AvaliacaoDto) {
         return this.avaliacaoService.create(data);
-    }
-    
+        }
+     
     @Get()
     @IsPublic()
     async findAll(){
