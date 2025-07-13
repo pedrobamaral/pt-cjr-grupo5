@@ -16,6 +16,7 @@ export default function CadastroPage() {
       password: "",
       curso: "",
       departamento: "",
+      foto_perfil:""
     },
     onSubmit: async (values) => {
       setError("");
@@ -25,7 +26,8 @@ export default function CadastroPage() {
           values.email,
           values.password,
           values.curso,
-          values.departamento
+          values.departamento,
+          values.foto_perfil
         );
         alert("Cadastro realizado com sucesso!");
         router.push("/login");
@@ -97,6 +99,14 @@ export default function CadastroPage() {
               placeholder="Departamento"
               onChange={formik.handleChange}
               value={formik.values.departamento}
+              className="w-full py-2 px-4 rounded border border-gray-300 placeholder:text-gray-400"
+            />
+            <input
+              type="url"
+              name="foto_perfil"
+              placeholder="Foto de Perfil"
+              value={formik.values.foto_perfil}
+              onChange={formik.handleChange}
               className="w-full py-2 px-4 rounded border border-gray-300 placeholder:text-gray-400"
             />
 

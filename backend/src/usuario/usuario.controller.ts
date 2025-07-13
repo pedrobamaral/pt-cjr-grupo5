@@ -10,31 +10,32 @@ export class UsuarioController {
 
     @IsPublic()
     @Post()
-    
+    @IsPublic()
     async create(@Body() data: UsuarioDto) {
         return this.usuarioService.create(data);
 
     }
 
     @Get()
-    
+   @IsPublic() 
     async findAll() {
         return this.usuarioService.findAll();
     }
 
     @Put(":id")
-    
+    @IsPublic()
     async update(@Param("id") id: number, @Body() data: UsuarioDto){
         return this.usuarioService.update(Number(id), data);
     }
 
     @Delete(":id")
-    
+    @IsPublic()
     async delete(@Param("id") id: number) {
         return this.usuarioService.delete(Number(id));
     }
 
     @Get(":id")
+    @IsPublic()
     async getById(@Param("id") id:number) {
         return this.usuarioService.getById(Number(id));
     }

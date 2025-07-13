@@ -13,14 +13,15 @@ export async function login(email: string, password: string) {
   }
 }
 
-export async function cadastrar(nome: string, email: string, senha: string, curso: string, departamento: string) {
+export async function cadastrar(nome: string, email: string, senha: string, curso: string, departamento: string, foto_perfil: string) {
   try {
     const response = await api.post('/usuario', {
       nome,
       email,
       senha,
       curso,
-      departamento
+      departamento,
+      foto_perfil
     });
 
     return response.data;
