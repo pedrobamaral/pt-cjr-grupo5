@@ -26,8 +26,8 @@ export default function EvaluationBox({
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   
   return (
-    <div className="bg-[#15589A] rounded-2xl h-60 w-full max-w-4xl flex flex-col justify-between p-4">
-      {/* Header */}
+    <div className="bg-[#3480A3] rounded-2xl h-60 w-full max-w-4xl flex flex-col justify-between p-4">
+      {/* header */}
       <div className="flex flex-row">
         <img
           src={foto || "https://i.pinimg.com/736x/e8/d7/d0/e8d7d05f392d9c2cf0285ce928fb9f4a.jpg"}
@@ -42,14 +42,14 @@ export default function EvaluationBox({
         </div>
       </div>
 
-      {/* Texto da avaliação - flex-1 e rolagem interna */}
+      {/* texto da avaliação - flex-1 e rolagem interna */}
       <div className="flex-1 overflow-y-auto mt-4 text-white text-sm">
         <p>
           {text}
         </p>
       </div>
 
-      {/* Rodapé fixado no final do card */}
+      {/* odapé fixado no final do card */}
       <div className="flex flex-row justify-between items-center text-white mt-2">
         <div className="flex flex-row gap-2">
           <MessageCircle size={20} />
