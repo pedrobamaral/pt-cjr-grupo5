@@ -26,11 +26,12 @@ export default function PerfilPage() {
   const [usuario, setUsuario] = useState<Usuario | null>(null);
   const [avaliacoes, setAvaliacoes] = useState<Avaliacao[]>([]);
 
+
   useEffect(() => {
     const userID = localStorage.getItem("userID");
     if (!userID) return;
 
-    // Buscar dados do usuário
+    // buscar dados do usuário
     fetch(`http://localhost:3001/usuario/${userID}`)
       .then(res => {
         if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
@@ -53,6 +54,25 @@ export default function PerfilPage() {
       .catch(err => console.error("Erro ao buscar avaliações:", err));
   }, []);
 
+  const handleDeleteProfile = async () => {
+    const userID = localStorage.getItem("userID");
+    const confirmDelete = confirm("Tem certeza que deseja excluir seu perfil?");
+    if (!confirmDelete) return;
+
+    try {
+      await fetch(`http://localhost:3001/usuario/${userID}`, {
+        method: 'DELETE',
+      });
+      alert("Perfil excluído com sucesso!");
+      localStorage.removeItem("token"); 
+      localStorage.removeItem("userID");
+      window.location.href = "/login"; // redireciona para a página de login
+    } catch (error) {
+      console.error("Erro ao excluir perfil:", error);    
+      alert("Erro ao excluir perfil.");
+    }
+  };
+
   if (!usuario) {
     return <p className="p-4">Carregando...</p>;
   }
@@ -63,7 +83,7 @@ export default function PerfilPage() {
         <main>
             <div className="relative">
                 <div className="w-full max-w-4xl mx-auto px-4 relative">
-                    <div className="bg-[#15589A] h-40 shadow-md"></div>
+                    <div className="bg-[#3480A3] h-40 shadow-md"></div>
                     <div className="bg-white min-h-[calc(100vh)]">
                         
                         {/* Foto de perfil */}
@@ -75,10 +95,9 @@ export default function PerfilPage() {
                         
                         {/* Botões de ação */}
                         <div className="absolute right-16 top-45 flex flex-col gap-4">
-                          <button className="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 transition">
-                            Editar Perfil
-                          </button>
-                          <button className="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition">
+                          <button
+                            onClick={handleDeleteProfile} 
+                            className="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition">
                             Excluir Perfil
                           </button>
                         </div>

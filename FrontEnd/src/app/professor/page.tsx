@@ -74,7 +74,7 @@ export default function ProfessorPage() {
         <main>
             <div className="relative">
                 <div className="w-full max-w-4xl mx-auto px-4 relative">
-                    <div className="bg-[#15589A] h-40 shadow-md"></div>
+                    <div className="bg-[#3480A3] h-40 shadow-md"></div>
                     <div className="bg-white min-h-[calc(100vh)]">
                         
                         {/* Foto de perfil */}
