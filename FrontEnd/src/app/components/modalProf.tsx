@@ -60,6 +60,7 @@ export default function ModalProf({ onClose }: ModalProfProps) {
             required
             className="border border-gray-300 rounded px-3 py-2"
           />
+          
 
           <input
             type="text"
