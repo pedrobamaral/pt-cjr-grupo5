@@ -35,8 +35,8 @@ export default function ComentarioPage() {
 
   useEffect(() => {
     setIsClient(true);
-    const usuario = localStorage.getItem("usuario");
-    setUsuarioAtual(usuario || "");
+    const usuarioStr = localStorage.getItem("usuario");
+    setUsuarioAtual(usuarioStr || "");
 
     const buscarComentarios = async () => {
       try {
@@ -66,10 +66,12 @@ export default function ComentarioPage() {
     onSubmit: async (values, { resetForm }) => {
       try {
         setCarregando(true);
+        const token = localStorage.getItem("token");
         const res = await fetch("http://localhost:3001/avaliacao", {
           method: "POST",
           headers: {
-            "Content-Type": "application/json"
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`
           },
           body: JSON.stringify(values)
         });
@@ -96,25 +98,34 @@ export default function ComentarioPage() {
 
   const formikResposta = useFormik({
     initialValues: {
-      usuarioID: 1,
-      conteudo: "",
-      avaliacaoID: ""
+      conteudo: ""
     },
     onSubmit: async (values, { resetForm }) => {
       try {
         setCarregando(true);
+        const token = localStorage.getItem("token");
+        const usuarioStr = localStorage.getItem("usuario");
+
+        if (!token || !usuarioStr) throw new Error("Usuário não autenticado");
+
+        const usuario = JSON.parse(usuarioStr);
+        if (!usuario?.id) throw new Error("ID do usuário ausente");
+
         const res = await fetch("http://localhost:3001/resposta", {
           method: "POST",
           headers: {
-            "Content-Type": "application/json"
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`
           },
           body: JSON.stringify({
-            ...values,
-            avaliacaoID: respostaModalAberto
+            conteudo: values.conteudo,
+            comentarioId: respostaModalAberto,
+            usuarioId: usuario.id
           })
         });
 
         if (!res.ok) throw new Error(`Erro ao responder comentário: ${res.status}`);
+
         const dadosAtualizados = await fetch("http://localhost:3001/avaliacao").then(r => r.json());
         setComentarios(dadosAtualizados);
         setRespostaModalAberto(null);
