@@ -49,6 +49,7 @@ export class ProfessorService {
             throw new Error('Professor não encontrado!');
         }
 
+
         await this.prisma.professor.update({
             data: {
                 nome: data.nome,
@@ -68,6 +69,9 @@ export class ProfessorService {
             }
         });
 
+        if(!professorExists) {
+            throw new Error('Professor não encontrado!');
+        }
         if(!professorExists) {
             throw new Error('Professor não encontrado!');
         }
@@ -92,4 +96,5 @@ export class ProfessorService {
 
             return professorExists;
     }
+
 }
